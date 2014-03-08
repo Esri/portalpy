@@ -1,0 +1,616 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module PortalPy</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>PortalPy</strong></big></big> (version 1.0)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:///C:/portalpy/portalpy.py">c:\portalpy\portalpy.py</a></font></td></tr></table>
+    <p><tt>The&nbsp;portalpy&nbsp;module&nbsp;for&nbsp;working&nbsp;with&nbsp;the&nbsp;ArcGIS&nbsp;Online&nbsp;and&nbsp;<a href="#Portal">Portal</a>&nbsp;APIs.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="collections.html">collections</a><br>
+<a href="copy.html">copy</a><br>
+<a href="gzip.html">gzip</a><br>
+<a href="httplib.html">httplib</a><br>
+</td><td width="25%" valign=top><a href="imghdr.html">imghdr</a><br>
+<a href="json.html">json</a><br>
+<a href="logging.html">logging</a><br>
+<a href="mimetools.html">mimetools</a><br>
+</td><td width="25%" valign=top><a href="mimetypes.html">mimetypes</a><br>
+<a href="os.html">os</a><br>
+<a href="re.html">re</a><br>
+<a href="tempfile.html">tempfile</a><br>
+</td><td width="25%" valign=top><a href="unicodedata.html">unicodedata</a><br>
+<a href="urllib.html">urllib</a><br>
+<a href="urllib2.html">urllib2</a><br>
+<a href="urlparse.html">urlparse</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="__builtin__.html#object">__builtin__.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="PortalPy.html#Portal">Portal</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Portal">class <strong>Portal</strong></a>(<a href="__builtin__.html#object">__builtin__.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>An&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;representing&nbsp;a&nbsp;connection&nbsp;to&nbsp;a&nbsp;single&nbsp;portal&nbsp;(via&nbsp;URL).<br>
+&nbsp;<br>
+Notes:<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;To&nbsp;instantiate&nbsp;a&nbsp;<a href="#Portal">Portal</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;execute&nbsp;code&nbsp;like&nbsp;this:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PortalPy.<a href="#Portal">Portal</a>(portalUrl,&nbsp;user,&nbsp;password)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;There&nbsp;are&nbsp;a&nbsp;few&nbsp;things&nbsp;you&nbsp;should&nbsp;know&nbsp;as&nbsp;you&nbsp;use&nbsp;the&nbsp;methods&nbsp;below.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Group&nbsp;IDs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Many&nbsp;of&nbsp;the&nbsp;group&nbsp;functions&nbsp;require&nbsp;a&nbsp;group&nbsp;id.&nbsp;&nbsp;This&nbsp;id&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;different&nbsp;than&nbsp;the&nbsp;group's&nbsp;name&nbsp;or&nbsp;title.&nbsp;&nbsp;To&nbsp;determine<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;group&nbsp;id,&nbsp;use&nbsp;the&nbsp;search_groups&nbsp;function&nbsp;using&nbsp;the&nbsp;title<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;get&nbsp;the&nbsp;group&nbsp;id.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Many&nbsp;of&nbsp;the&nbsp;methods&nbsp;return&nbsp;a&nbsp;time&nbsp;field.&nbsp;&nbsp;All&nbsp;time&nbsp;is<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returned&nbsp;as&nbsp;millseconds&nbsp;since&nbsp;1&nbsp;January&nbsp;1970.&nbsp;&nbsp;Python<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expects&nbsp;time&nbsp;in&nbsp;seconds&nbsp;since&nbsp;1&nbsp;January&nbsp;1970&nbsp;so&nbsp;make&nbsp;sure<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;divide&nbsp;times&nbsp;from&nbsp;PortalPy&nbsp;by&nbsp;1000.&nbsp;&nbsp;See&nbsp;the&nbsp;example<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;few&nbsp;lines&nbsp;down&nbsp;to&nbsp;see&nbsp;how&nbsp;to&nbsp;convert&nbsp;from&nbsp;PortalPy&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;Python&nbsp;time.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Example&nbsp;-&nbsp;converting&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;import&nbsp;time<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group&nbsp;=&nbsp;portalAdmin.<a href="#Portal-get_group">get_group</a>('67e1761068b7453693a0c68c92a62e2e')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pythontime&nbsp;=&nbsp;time.ctime(group['created']/1000)<br>
+&nbsp;<br>
+&nbsp;<br>
+Example&nbsp;-&nbsp;list&nbsp;users&nbsp;in&nbsp;group&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;portal&nbsp;=&nbsp;PortalPy.<a href="#Portal">Portal</a>(portalUrl,&nbsp;user,&nbsp;password)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;resp&nbsp;=&nbsp;portal.<a href="#Portal-get_group_members">get_group_members</a>('67e1761068b7453693a0c68c92a62e2e')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;user&nbsp;in&nbsp;resp['users']:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Example&nbsp;-&nbsp;create&nbsp;a&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;portal=&nbsp;PortalPy.<a href="#Portal">Portal</a>(portalUrl,&nbsp;user,&nbsp;password)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;=&nbsp;portalAdmin.<a href="#Portal-create_group">create_group</a>('my&nbsp;group',&nbsp;'test&nbsp;tag',&nbsp;'a&nbsp;group&nbsp;to&nbsp;share&nbsp;travel&nbsp;maps')<br>
+&nbsp;<br>
+Example&nbsp;-&nbsp;delete&nbsp;a&nbsp;user&nbsp;named&nbsp;amy&nbsp;and&nbsp;assign&nbsp;her&nbsp;content&nbsp;to&nbsp;bob<br>
+&nbsp;&nbsp;&nbsp;&nbsp;portal=&nbsp;PortalPy.<a href="#Portal">Portal</a>(portalUrl,&nbsp;user,&nbsp;password)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;portal.<a href="#Portal-delete_user">delete_user</a>('amy.user',&nbsp;True,&nbsp;'bob.user')<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Portal-__init__"><strong>__init__</strong></a>(self, url, username<font color="#909090">=None</font>, password<font color="#909090">=None</font>, key_file<font color="#909090">=None</font>, cert_file<font color="#909090">=None</font>, expiration<font color="#909090">=60</font>, referer<font color="#909090">=None</font>, proxy_host<font color="#909090">=None</font>, proxy_port<font color="#909090">=None</font>, connection<font color="#909090">=None</font>, workdir<font color="#909090">=r'c:\users\davi3690\appdata\local\temp\2'</font>)</dt><dd><tt>The&nbsp;<a href="#Portal">Portal</a>&nbsp;constructor.&nbsp;Requires&nbsp;URL&nbsp;and&nbsp;optionally&nbsp;username/password.</tt></dd></dl>
+
+<dl><dt><a name="Portal-add_group_users"><strong>add_group_users</strong></a>(self, user_names, group_id)</dt><dd><tt>Adds&nbsp;users&nbsp;to&nbsp;the&nbsp;group&nbsp;specified.&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;<br>
+Note:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;method&nbsp;will&nbsp;only&nbsp;work&nbsp;if&nbsp;the&nbsp;user&nbsp;for&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Portal">Portal</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;is&nbsp;either&nbsp;an&nbsp;administrator&nbsp;for&nbsp;the&nbsp;entire<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Portal">Portal</a>&nbsp;or&nbsp;the&nbsp;owner&nbsp;of&nbsp;the&nbsp;group.<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user_names&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;comma-separated&nbsp;users<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;specifying&nbsp;group&nbsp;id<br>
+&nbsp;<br>
+Returns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;dictionary&nbsp;with&nbsp;a&nbsp;key&nbsp;of&nbsp;"not_added"&nbsp;which&nbsp;contains&nbsp;the&nbsp;users&nbsp;that&nbsp;were&nbsp;not&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;added&nbsp;to&nbsp;the&nbsp;group.</tt></dd></dl>
+
+<dl><dt><a name="Portal-create_group"><strong>create_group</strong></a>(self, title, tags, description<font color="#909090">=None</font>, snippet<font color="#909090">=None</font>, access<font color="#909090">='public'</font>, thumbnail<font color="#909090">=None</font>, is_invitation_only<font color="#909090">=False</font>, sort_field<font color="#909090">='avgRating'</font>, sort_order<font color="#909090">='desc'</font>, is_view_only<font color="#909090">=False</font>)</dt><dd><tt>Creates&nbsp;a&nbsp;group&nbsp;and&nbsp;returns&nbsp;a&nbsp;group&nbsp;id&nbsp;if&nbsp;successful.&nbsp;&nbsp;<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;comma-delimited&nbsp;list&nbsp;of&nbsp;tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;describes&nbsp;group&nbsp;in&nbsp;detail<br>
+&nbsp;&nbsp;&nbsp;&nbsp;snippet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;&lt;250&nbsp;characters&nbsp;summarizes&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;access&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;can&nbsp;be&nbsp;private,&nbsp;public,&nbsp;or&nbsp;org<br>
+&nbsp;&nbsp;&nbsp;&nbsp;thumbnail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;URL&nbsp;to&nbsp;group&nbsp;image<br>
+&nbsp;&nbsp;&nbsp;&nbsp;isInvitationOnly&nbsp;&nbsp;optional&nbsp;boolean,&nbsp;defines&nbsp;whether&nbsp;users&nbsp;can&nbsp;join&nbsp;by&nbsp;request.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;specifies&nbsp;how&nbsp;shared&nbsp;items&nbsp;with&nbsp;the&nbsp;group&nbsp;are&nbsp;sorted.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;asc&nbsp;or&nbsp;desc&nbsp;for&nbsp;ascending&nbsp;or&nbsp;descending.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is_view_only&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;boolean,&nbsp;defines&nbsp;whether&nbsp;the&nbsp;group&nbsp;is&nbsp;searchable<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;string&nbsp;that&nbsp;is&nbsp;a&nbsp;group&nbsp;id.</tt></dd></dl>
+
+<dl><dt><a name="Portal-create_group_from_dict"><strong>create_group_from_dict</strong></a>(self, group, thumbnail<font color="#909090">=None</font>)</dt><dd><tt>Creates&nbsp;a&nbsp;group&nbsp;and&nbsp;returns&nbsp;a&nbsp;group&nbsp;id&nbsp;if&nbsp;successful.<br>
+&nbsp;<br>
+Note<br>
+&nbsp;&nbsp;&nbsp;Use&nbsp;create_group&nbsp;in&nbsp;most&nbsp;cases.&nbsp;&nbsp;This&nbsp;method&nbsp;is&nbsp;useful&nbsp;for&nbsp;taking&nbsp;a&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;dict&nbsp;returned&nbsp;from&nbsp;another&nbsp;PortalPy&nbsp;call&nbsp;and&nbsp;copying&nbsp;it.<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dict&nbsp;<a href="__builtin__.html#object">object</a><br>
+&nbsp;&nbsp;&nbsp;&nbsp;thumbnail&nbsp;&nbsp;&nbsp;&nbsp;url&nbsp;to&nbsp;image<br>
+&nbsp;<br>
+Example<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Portal-create_group">create_group</a>({'title':&nbsp;'Test',&nbsp;'access':'public'})</tt></dd></dl>
+
+<dl><dt><a name="Portal-delete_group"><strong>delete_group</strong></a>(self, group_id)</dt><dd><tt>Deletes&nbsp;a&nbsp;group.&nbsp;<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;is&nbsp;a&nbsp;string&nbsp;containing&nbsp;the&nbsp;id&nbsp;for&nbsp;the&nbsp;group&nbsp;to&nbsp;be&nbsp;deleted.<br>
+&nbsp;<br>
+Returns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;it&nbsp;was&nbsp;successful.</tt></dd></dl>
+
+<dl><dt><a name="Portal-delete_user"><strong>delete_user</strong></a>(self, username, cascade<font color="#909090">=False</font>, reassign_to<font color="#909090">=None</font>)</dt><dd><tt>Deletes&nbsp;a&nbsp;user&nbsp;from&nbsp;the&nbsp;portal,&nbsp;optionally&nbsp;deleting&nbsp;or&nbsp;reassigning&nbsp;groups&nbsp;and&nbsp;items.<br>
+&nbsp;<br>
+Notes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;can&nbsp;not&nbsp;delete&nbsp;a&nbsp;user&nbsp;in&nbsp;<a href="#Portal">Portal</a>&nbsp;if&nbsp;that&nbsp;user&nbsp;owns&nbsp;groups&nbsp;or&nbsp;items.&nbsp;&nbsp;If&nbsp;you<br>
+&nbsp;&nbsp;&nbsp;&nbsp;choose&nbsp;to&nbsp;cascade&nbsp;then&nbsp;those&nbsp;items&nbsp;and&nbsp;groups&nbsp;will&nbsp;be&nbsp;reassigned&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;user&nbsp;identified&nbsp;in&nbsp;the&nbsp;reassign_to&nbsp;option.&nbsp;&nbsp;If&nbsp;you&nbsp;choose&nbsp;not&nbsp;to&nbsp;cascade<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;deletion&nbsp;will&nbsp;either&nbsp;succeed&nbsp;or&nbsp;fail&nbsp;depending&nbsp;on&nbsp;whether&nbsp;the&nbsp;user's&nbsp;items<br>
+&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;groups&nbsp;have&nbsp;previously&nbsp;been&nbsp;transferred.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;cascading,&nbsp;this&nbsp;method&nbsp;will&nbsp;delete&nbsp;up&nbsp;to&nbsp;10,000&nbsp;items.&nbsp;&nbsp;If&nbsp;the&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;has&nbsp;more&nbsp;than&nbsp;10,000&nbsp;items&nbsp;the&nbsp;method&nbsp;will&nbsp;fail.&nbsp;&nbsp;<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cascade:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;boolean,&nbsp;true&nbsp;means&nbsp;reassign&nbsp;items&nbsp;and&nbsp;groups<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reassign_to&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;new&nbsp;owner&nbsp;of&nbsp;items&nbsp;and&nbsp;groups<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;the&nbsp;operation&nbsp;succeeded&nbsp;or&nbsp;failed.</tt></dd></dl>
+
+<dl><dt><a name="Portal-generate_token"><strong>generate_token</strong></a>(self, username, password, expiration<font color="#909090">=60</font>)</dt><dd><tt>Generates&nbsp;and&nbsp;returns&nbsp;a&nbsp;new&nbsp;token,&nbsp;but&nbsp;doesn't&nbsp;re-login.&nbsp;<br>
+&nbsp;<br>
+Notes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;method&nbsp;is&nbsp;not&nbsp;needed&nbsp;when&nbsp;using&nbsp;the&nbsp;<a href="#Portal">Portal</a>&nbsp;class<br>
+&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;make&nbsp;calls&nbsp;into&nbsp;<a href="#Portal">Portal</a>.&nbsp;&nbsp;It's&nbsp;provided&nbsp;for&nbsp;the&nbsp;benefit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;of&nbsp;making&nbsp;calls&nbsp;into&nbsp;<a href="#Portal">Portal</a>&nbsp;outside&nbsp;of&nbsp;the&nbsp;<a href="#Portal">Portal</a>&nbsp;class.<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Portal">Portal</a>&nbsp;uses&nbsp;a&nbsp;token-based&nbsp;authentication&nbsp;mechanism&nbsp;where<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;user&nbsp;provides&nbsp;their&nbsp;credentials&nbsp;and&nbsp;a&nbsp;short-term&nbsp;token<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;used&nbsp;for&nbsp;calls.&nbsp;&nbsp;Most&nbsp;calls&nbsp;made&nbsp;to&nbsp;the&nbsp;<a href="#Portal">Portal</a>&nbsp;REST&nbsp;API<br>
+&nbsp;&nbsp;&nbsp;&nbsp;require&nbsp;a&nbsp;token&nbsp;and&nbsp;this&nbsp;can&nbsp;be&nbsp;appended&nbsp;to&nbsp;those&nbsp;requests.<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;password,&nbsp;name&nbsp;of&nbsp;the&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;expiration&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;integer,&nbsp;number&nbsp;of&nbsp;minutes&nbsp;until&nbsp;the&nbsp;token&nbsp;expires<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;string&nbsp;with&nbsp;the&nbsp;token</tt></dd></dl>
+
+<dl><dt><a name="Portal-get_group"><strong>get_group</strong></a>(self, group_id)</dt><dd><tt>Returns&nbsp;group&nbsp;information&nbsp;for&nbsp;the&nbsp;specified&nbsp;group&nbsp;group_id.&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;:&nbsp;required&nbsp;string,&nbsp;indicating&nbsp;group.<br>
+&nbsp;<br>
+Returns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dictionary&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;the&nbsp;group's&nbsp;information.&nbsp;&nbsp;The&nbsp;keys&nbsp;in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;dictionary&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;will&nbsp;often&nbsp;include:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isInvitationOnly:&nbsp;&nbsp;&nbsp;if&nbsp;set&nbsp;to&nbsp;true,&nbsp;users&nbsp;can't&nbsp;apply&nbsp;to&nbsp;join&nbsp;the&nbsp;group.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;owner:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;owner&nbsp;username&nbsp;of&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;explains&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;snippet:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;short&nbsp;summary&nbsp;of&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tags:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user-defined&nbsp;tags&nbsp;that&nbsp;describe&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;phone:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;contact&nbsp;information&nbsp;for&nbsp;group.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thumbnail:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File&nbsp;name&nbsp;relative&nbsp;to&nbsp;<a href="http://&lt;community-url&gt;/groups/&lt;groupId&gt;/info">http://&lt;community-url&gt;/groups/&lt;groupId&gt;/info</a>&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;group&nbsp;created,&nbsp;ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modified:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When&nbsp;group&nbsp;last&nbsp;modified.&nbsp;ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;access:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Can&nbsp;be&nbsp;private,&nbsp;org,&nbsp;or&nbsp;public.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;userMembership:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;dict&nbsp;with&nbsp;keys&nbsp;username&nbsp;and&nbsp;memberType.&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;memberType:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;provides&nbsp;the&nbsp;calling&nbsp;user's&nbsp;access&nbsp;(owner,&nbsp;admin,&nbsp;member,&nbsp;none).</tt></dd></dl>
+
+<dl><dt><a name="Portal-get_group_members"><strong>get_group_members</strong></a>(self, group_id)</dt><dd><tt>Returns&nbsp;members&nbsp;of&nbsp;the&nbsp;specified&nbsp;group.<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group_id:&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;specifies&nbsp;the&nbsp;group<br>
+&nbsp;<br>
+Returns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dictionary&nbsp;with&nbsp;keys:&nbsp;owner,&nbsp;admins,&nbsp;and&nbsp;users.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;owner&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;value,&nbsp;the&nbsp;group's&nbsp;owner<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;admins&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;strings,&nbsp;typically&nbsp;this&nbsp;is&nbsp;the&nbsp;same&nbsp;as&nbsp;the&nbsp;owner.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;strings,&nbsp;the&nbsp;members&nbsp;of&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Example&nbsp;(to&nbsp;print&nbsp;users&nbsp;in&nbsp;a&nbsp;group)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;=&nbsp;portal.<a href="#Portal-get_group_members">get_group_members</a>("67e1761068b7453693a0c68c92a62e2e")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;user&nbsp;in&nbsp;response['users']&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;user</tt></dd></dl>
+
+<dl><dt><a name="Portal-get_group_thumbnail"><strong>get_group_thumbnail</strong></a>(self, group_id)</dt><dd><tt>Returns&nbsp;the&nbsp;bytes&nbsp;that&nbsp;make&nbsp;up&nbsp;the&nbsp;thumbnail&nbsp;for&nbsp;the&nbsp;specified&nbsp;group&nbsp;group_id.<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_id:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;specifies&nbsp;the&nbsp;group's&nbsp;thumbnail<br>
+&nbsp;<br>
+Returns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bytes&nbsp;that&nbsp;representt&nbsp;he&nbsp;image.<br>
+&nbsp;<br>
+Example&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;=&nbsp;portal.<a href="#Portal-get_group_thumbnail">get_group_thumbnail</a>("67e1761068b7453693a0c68c92a62e2e")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;f&nbsp;=&nbsp;open(filename,&nbsp;'wb')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;f.write(response)</tt></dd></dl>
+
+<dl><dt><a name="Portal-get_org_users"><strong>get_org_users</strong></a>(self, max_users<font color="#909090">=1000</font>)</dt><dd><tt>Returns&nbsp;all&nbsp;users&nbsp;within&nbsp;the&nbsp;portal&nbsp;organization.&nbsp;<br>
+&nbsp;&nbsp;<br>
+&nbsp;Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;max_users&nbsp;:&nbsp;optional&nbsp;int,&nbsp;the&nbsp;maximum&nbsp;number&nbsp;of&nbsp;users&nbsp;to&nbsp;return.<br>
+&nbsp;<br>
+Returns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;list&nbsp;of&nbsp;dicts.&nbsp;&nbsp;Each&nbsp;dict&nbsp;has&nbsp;the&nbsp;following&nbsp;keys:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storageUsage:&nbsp;&nbsp;&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storageQuota:&nbsp;&nbsp;&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description:&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tags:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;strings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;region:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int,&nbsp;when&nbsp;account&nbsp;created,&nbsp;ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modified:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int,&nbsp;when&nbsp;account&nbsp;last&nbsp;modified,&nbsp;ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;email:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;culture:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orgId:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preferredView:&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;strings<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;(org_user,&nbsp;org_publisher,&nbsp;org_admin)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullName:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thumbnail:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idpUsername:&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;<br>
+Example&nbsp;(print&nbsp;all&nbsp;usernames&nbsp;in&nbsp;portal):<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;resp&nbsp;=&nbsp;portalAdmin.<a href="#Portal-get_org_users">get_org_users</a>()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;user&nbsp;in&nbsp;resp:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;user['username']</tt></dd></dl>
+
+<dl><dt><a name="Portal-get_properties"><strong>get_properties</strong></a>(self, force<font color="#909090">=False</font>)</dt><dd><tt>Returns&nbsp;the&nbsp;portal&nbsp;properties&nbsp;(using&nbsp;cache&nbsp;unless&nbsp;force=True).</tt></dd></dl>
+
+<dl><dt><a name="Portal-get_user"><strong>get_user</strong></a>(self, username)</dt><dd><tt>Returns&nbsp;the&nbsp;user&nbsp;information&nbsp;for&nbsp;the&nbsp;specified&nbsp;username.&nbsp;<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;the&nbsp;username&nbsp;whose&nbsp;information&nbsp;you&nbsp;want.<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;not&nbsp;found&nbsp;and&nbsp;returns&nbsp;a&nbsp;dictionary&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;found<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;dictionary&nbsp;has&nbsp;the&nbsp;following&nbsp;keys:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;access&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time&nbsp;(int)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;culture&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;two-letter&nbsp;language&nbsp;code&nbsp;('en')<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idpUsername&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user&nbsp;in&nbsp;the&nbsp;enterprise&nbsp;system&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groups&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;dictionaries.&nbsp;&nbsp;For&nbsp;dictionary&nbsp;keys,&nbsp;see&nbsp;get_group&nbsp;doc.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modified&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time&nbsp;(int)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orgId&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;the&nbsp;organization&nbsp;id<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preferredView&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;value&nbsp;is&nbsp;either&nbsp;Web,&nbsp;GIS,&nbsp;or&nbsp;null<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;region&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;None&nbsp;or&nbsp;two&nbsp;letter&nbsp;country&nbsp;code&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;value&nbsp;is&nbsp;either&nbsp;org_user,&nbsp;org_publisher,&nbsp;org_admin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storageUsage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storageQuota&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list&nbsp;of&nbsp;strings&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thumbnail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;user</tt></dd></dl>
+
+<dl><dt><a name="Portal-get_version"><strong>get_version</strong></a>(self, force<font color="#909090">=False</font>)</dt><dd><tt>Returns&nbsp;the&nbsp;portal&nbsp;version&nbsp;(using&nbsp;cache&nbsp;unless&nbsp;force=True).&nbsp;<br>
+&nbsp;<br>
+Note:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;version&nbsp;information&nbsp;is&nbsp;retrieved&nbsp;when&nbsp;you&nbsp;create&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Portal">Portal</a>&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;and&nbsp;then&nbsp;cached&nbsp;for&nbsp;future&nbsp;requests.&nbsp;&nbsp;If&nbsp;you<br>
+&nbsp;&nbsp;&nbsp;&nbsp;want&nbsp;to&nbsp;make&nbsp;a&nbsp;request&nbsp;to&nbsp;the&nbsp;<a href="#Portal">Portal</a>&nbsp;and&nbsp;not&nbsp;rely&nbsp;on&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cache&nbsp;then&nbsp;you&nbsp;can&nbsp;set&nbsp;the&nbsp;force&nbsp;argument&nbsp;to&nbsp;True.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;force&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boolean,&nbsp;true=make&nbsp;a&nbsp;request,&nbsp;false=use&nbsp;cache<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;string&nbsp;with&nbsp;the&nbsp;version.&nbsp;&nbsp;The&nbsp;version&nbsp;is&nbsp;an&nbsp;internal&nbsp;number<br>
+&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;may&nbsp;not&nbsp;match&nbsp;the&nbsp;version&nbsp;of&nbsp;the&nbsp;product&nbsp;purchased.&nbsp;&nbsp;So<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.3&nbsp;is&nbsp;returned&nbsp;from&nbsp;<a href="#Portal">Portal</a>&nbsp;10.2.1&nbsp;for&nbsp;instance.</tt></dd></dl>
+
+<dl><dt><a name="Portal-invite_group_users"><strong>invite_group_users</strong></a>(self, user_names, group_id, role<font color="#909090">='group_member'</font>, expiration<font color="#909090">=10080</font>)</dt><dd><tt>Invites&nbsp;users&nbsp;to&nbsp;a&nbsp;group.<br>
+&nbsp;<br>
+Notes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;user&nbsp;who&nbsp;is&nbsp;invited&nbsp;to&nbsp;a&nbsp;group&nbsp;will&nbsp;see&nbsp;a&nbsp;list&nbsp;of&nbsp;invitations<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;the&nbsp;"Groups"&nbsp;tab&nbsp;of&nbsp;portal&nbsp;listing&nbsp;invitations.&nbsp;&nbsp;The&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;can&nbsp;either&nbsp;accept&nbsp;or&nbsp;reject&nbsp;the&nbsp;invitation.<br>
+&nbsp;<br>
+Requires<br>
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;user&nbsp;executing&nbsp;the&nbsp;command&nbsp;must&nbsp;be&nbsp;group&nbsp;owner<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user_names:&nbsp;&nbsp;&nbsp;a&nbsp;required&nbsp;string&nbsp;list&nbsp;of&nbsp;users&nbsp;to&nbsp;invite<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;specifies&nbsp;the&nbsp;group&nbsp;you&nbsp;are&nbsp;inviting&nbsp;users&nbsp;to.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;role:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;an&nbsp;optional&nbsp;string,&nbsp;either&nbsp;group_member&nbsp;or&nbsp;group_admin<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expiration:&nbsp;&nbsp;&nbsp;an&nbsp;optional&nbsp;int,&nbsp;specifies&nbsp;how&nbsp;long&nbsp;the&nbsp;invitation&nbsp;is&nbsp;valid&nbsp;for&nbsp;in&nbsp;minutes.<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean&nbsp;that&nbsp;indicates&nbsp;whether&nbsp;the&nbsp;call&nbsp;succeeded.</tt></dd></dl>
+
+<dl><dt><a name="Portal-is_all_ssl"><strong>is_all_ssl</strong></a>(self)</dt><dd><tt>Returns&nbsp;true&nbsp;if&nbsp;this&nbsp;portal&nbsp;requires&nbsp;SSL.</tt></dd></dl>
+
+<dl><dt><a name="Portal-is_arcgisonline"><strong>is_arcgisonline</strong></a>(self)</dt><dd><tt>Returns&nbsp;true&nbsp;if&nbsp;this&nbsp;portal&nbsp;is&nbsp;ArcGIS&nbsp;Online.</tt></dd></dl>
+
+<dl><dt><a name="Portal-is_logged_in"><strong>is_logged_in</strong></a>(self)</dt><dd><tt>Returns&nbsp;true&nbsp;if&nbsp;logged&nbsp;into&nbsp;the&nbsp;portal.</tt></dd></dl>
+
+<dl><dt><a name="Portal-is_multitenant"><strong>is_multitenant</strong></a>(self)</dt><dd><tt>Returns&nbsp;true&nbsp;if&nbsp;this&nbsp;portal&nbsp;is&nbsp;multitenant.</tt></dd></dl>
+
+<dl><dt><a name="Portal-is_org"><strong>is_org</strong></a>(self)</dt><dd><tt>Returns&nbsp;true&nbsp;if&nbsp;this&nbsp;portal&nbsp;is&nbsp;an&nbsp;organization.</tt></dd></dl>
+
+<dl><dt><a name="Portal-is_subscription"><strong>is_subscription</strong></a>(self)</dt><dd><tt>Returns&nbsp;true&nbsp;if&nbsp;this&nbsp;portal&nbsp;is&nbsp;an&nbsp;ArcGIS&nbsp;Online&nbsp;subscription.</tt></dd></dl>
+
+<dl><dt><a name="Portal-leave_group"><strong>leave_group</strong></a>(self, group_id)</dt><dd><tt>Removes&nbsp;the&nbsp;logged&nbsp;in&nbsp;user&nbsp;from&nbsp;the&nbsp;specified&nbsp;group.&nbsp;<br>
+&nbsp;<br>
+Requires:&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;User&nbsp;must&nbsp;be&nbsp;logged&nbsp;in.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;group_id:&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;specifies&nbsp;the&nbsp;group&nbsp;id<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;whether&nbsp;the&nbsp;operation&nbsp;was&nbsp;successful.</tt></dd></dl>
+
+<dl><dt><a name="Portal-logged_in_user"><strong>logged_in_user</strong></a>(self)</dt><dd><tt>Returns&nbsp;information&nbsp;about&nbsp;the&nbsp;logged&nbsp;in&nbsp;user.<br>
+&nbsp;<br>
+Returns&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dict&nbsp;with&nbsp;the&nbsp;following&nbsp;keys:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;storageUsage&nbsp;&nbsp;&nbsp;int<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;comma-separated&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int,&nbsp;when&nbsp;group&nbsp;created&nbsp;(ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970)&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modified&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int,&nbsp;when&nbsp;group&nbsp;last&nbsp;modified&nbsp;(ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;idpUsername&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user&nbsp;in&nbsp;their&nbsp;identity&nbsp;provider</tt></dd></dl>
+
+<dl><dt><a name="Portal-login"><strong>login</strong></a>(self, username, password, expiration<font color="#909090">=60</font>)</dt><dd><tt>Logs&nbsp;into&nbsp;the&nbsp;portal&nbsp;using&nbsp;username/password.&nbsp;<br>
+&nbsp;<br>
+Notes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You&nbsp;can&nbsp;log&nbsp;into&nbsp;a&nbsp;portal&nbsp;when&nbsp;you&nbsp;construct&nbsp;a&nbsp;portal<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;or&nbsp;you&nbsp;can&nbsp;login&nbsp;later.&nbsp;&nbsp;This&nbsp;function&nbsp;is&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;the&nbsp;situation&nbsp;when&nbsp;you&nbsp;need&nbsp;to&nbsp;log&nbsp;in&nbsp;later.<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;password:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expiration:&nbsp;&nbsp;&nbsp;optional&nbsp;int,&nbsp;how&nbsp;long&nbsp;the&nbsp;token&nbsp;generated&nbsp;should&nbsp;last.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;string,&nbsp;the&nbsp;token</tt></dd></dl>
+
+<dl><dt><a name="Portal-logout"><strong>logout</strong></a>(self)</dt><dd><tt>Logs&nbsp;out&nbsp;of&nbsp;the&nbsp;portal.&nbsp;<br>
+&nbsp;<br>
+Notes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;portal&nbsp;will&nbsp;forget&nbsp;any&nbsp;existing&nbsp;tokens&nbsp;it&nbsp;was&nbsp;using,&nbsp;all&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subsequent&nbsp;portal&nbsp;calls&nbsp;will&nbsp;be&nbsp;anonymous&nbsp;until&nbsp;another&nbsp;login<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;call&nbsp;occurs.<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No&nbsp;return&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="Portal-reassign_group"><strong>reassign_group</strong></a>(self, group_id, target_owner)</dt><dd><tt>Reassigns&nbsp;a&nbsp;group&nbsp;to&nbsp;another&nbsp;owner.&nbsp;<br>
+&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;unique&nbsp;identifier&nbsp;for&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target_owner:&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;username&nbsp;of&nbsp;new&nbsp;group&nbsp;owner<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean,&nbsp;indicating&nbsp;success</tt></dd></dl>
+
+<dl><dt><a name="Portal-remove_group_users"><strong>remove_group_users</strong></a>(self, user_names, group_id)</dt><dd><tt>Remove&nbsp;users&nbsp;from&nbsp;a&nbsp;group.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;user_names&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;comma-separated&nbsp;list&nbsp;of&nbsp;users&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;the&nbsp;id&nbsp;for&nbsp;a&nbsp;group.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;dictionary&nbsp;with&nbsp;a&nbsp;key&nbsp;notRemoved&nbsp;that&nbsp;is&nbsp;a&nbsp;list&nbsp;of&nbsp;users&nbsp;not&nbsp;removed.</tt></dd></dl>
+
+<dl><dt><a name="Portal-reset_user"><strong>reset_user</strong></a>(self, username, password, new_password<font color="#909090">=None</font>, new_security_question<font color="#909090">=None</font>, new_security_answer<font color="#909090">=None</font>)</dt><dd><tt>Resets&nbsp;a&nbsp;user's&nbsp;password,&nbsp;security&nbsp;question,&nbsp;and/or&nbsp;security&nbsp;answer.<br>
+&nbsp;<br>
+Notes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;function&nbsp;does&nbsp;not&nbsp;apply&nbsp;to&nbsp;those&nbsp;using&nbsp;enterprise&nbsp;accounts<br>
+&nbsp;&nbsp;&nbsp;&nbsp;that&nbsp;come&nbsp;from&nbsp;an&nbsp;enterprise&nbsp;such&nbsp;as&nbsp;ActiveDirectory,&nbsp;LDAP,&nbsp;or&nbsp;SAML.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;It&nbsp;only&nbsp;has&nbsp;an&nbsp;effect&nbsp;on&nbsp;built-in&nbsp;users.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;a&nbsp;new&nbsp;security&nbsp;question&nbsp;is&nbsp;specified,&nbsp;a&nbsp;new&nbsp;security&nbsp;answer&nbsp;should<br>
+&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;provided.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;account&nbsp;being&nbsp;reset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;current&nbsp;password<br>
+&nbsp;&nbsp;&nbsp;&nbsp;new_password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;new&nbsp;password&nbsp;if&nbsp;resetting&nbsp;password<br>
+&nbsp;&nbsp;&nbsp;&nbsp;new_security_question&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;int,&nbsp;new&nbsp;security&nbsp;question&nbsp;if&nbsp;desired<br>
+&nbsp;&nbsp;&nbsp;&nbsp;new_security_answer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;new&nbsp;security&nbsp;question&nbsp;answer&nbsp;if&nbsp;desired<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean,&nbsp;indicating&nbsp;success</tt></dd></dl>
+
+<dl><dt><a name="Portal-search"><strong>search</strong></a>(self, q, bbox<font color="#909090">=None</font>, sort_field<font color="#909090">='title'</font>, sort_order<font color="#909090">='asc'</font>, max_results<font color="#909090">=1000</font>, add_org<font color="#909090">=True</font>)</dt></dl>
+
+<dl><dt><a name="Portal-search_groups"><strong>search_groups</strong></a>(self, q, sort_field<font color="#909090">='title'</font>, sort_order<font color="#909090">='asc'</font>, max_groups<font color="#909090">=1000</font>, add_org<font color="#909090">=True</font>)</dt><dd><tt>Searches&nbsp;for&nbsp;portal&nbsp;groups.<br>
+&nbsp;<br>
+Notes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;few&nbsp;things&nbsp;that&nbsp;will&nbsp;be&nbsp;helpful&nbsp;to&nbsp;know.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;The&nbsp;query&nbsp;syntax&nbsp;has&nbsp;quite&nbsp;a&nbsp;few&nbsp;features&nbsp;that&nbsp;can't&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;adequately&nbsp;described&nbsp;here.&nbsp;&nbsp;The&nbsp;query&nbsp;syntax&nbsp;is&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;available&nbsp;in&nbsp;ArcGIS&nbsp;help.&nbsp;&nbsp;A&nbsp;short&nbsp;version&nbsp;of&nbsp;that&nbsp;URL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;<a href="http://bitly.com/1fJ8q31">http://bitly.com/1fJ8q31</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Most&nbsp;of&nbsp;the&nbsp;time&nbsp;when&nbsp;searching&nbsp;groups&nbsp;you&nbsp;want&nbsp;to&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;search&nbsp;within&nbsp;your&nbsp;organization&nbsp;in&nbsp;ArcGIS&nbsp;Online<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;within&nbsp;your&nbsp;<a href="#Portal">Portal</a>.&nbsp;&nbsp;As&nbsp;a&nbsp;convenience,&nbsp;the&nbsp;method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;automatically&nbsp;appends&nbsp;your&nbsp;organization&nbsp;id&nbsp;to&nbsp;the&nbsp;query&nbsp;by&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default.&nbsp;&nbsp;If&nbsp;you&nbsp;don't&nbsp;want&nbsp;the&nbsp;API&nbsp;to&nbsp;append&nbsp;to&nbsp;your&nbsp;query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set&nbsp;add_org&nbsp;to&nbsp;false.&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;q&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;query&nbsp;string.&nbsp;&nbsp;See&nbsp;notes.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;valid&nbsp;values&nbsp;can&nbsp;be&nbsp;title,&nbsp;owner,&nbsp;created<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;valid&nbsp;values&nbsp;are&nbsp;asc&nbsp;or&nbsp;desc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_groups&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;int,&nbsp;maximum&nbsp;number&nbsp;of&nbsp;groups&nbsp;returned&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add_org&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;boolean,&nbsp;controls&nbsp;whether&nbsp;to&nbsp;search&nbsp;within&nbsp;your&nbsp;org<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;list&nbsp;of&nbsp;dictionaries.&nbsp;&nbsp;Each&nbsp;dictionary&nbsp;has&nbsp;the&nbsp;following&nbsp;keys.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;access&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;values=private,&nbsp;org,&nbsp;public<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int,&nbsp;ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;unique&nbsp;id&nbsp;for&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isInvitationOnly&nbsp;&nbsp;&nbsp;&nbsp;boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;isViewOnly&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modified&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int,&nbsp;ms&nbsp;since&nbsp;1&nbsp;Jan&nbsp;1970<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;owner&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;user&nbsp;name&nbsp;of&nbsp;owner<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;phone&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;snippet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;short&nbsp;summary&nbsp;of&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sortField&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;how&nbsp;shared&nbsp;items&nbsp;are&nbsp;sorted<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sortOrder&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;asc&nbsp;or&nbsp;desc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;list,&nbsp;user&nbsp;supplied&nbsp;tags&nbsp;for&nbsp;searching<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thumbnail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;file.&nbsp;&nbsp;Append&nbsp;to&nbsp;<a href="http://&lt;community">http://&lt;community</a>&nbsp;url&gt;/groups/&lt;group&nbsp;id&gt;/info/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;group&nbsp;as&nbsp;shown&nbsp;to&nbsp;users</tt></dd></dl>
+
+<dl><dt><a name="Portal-search_users"><strong>search_users</strong></a>(self, q, sort_field<font color="#909090">='username'</font>, sort_order<font color="#909090">='asc'</font>, max_users<font color="#909090">=1000</font>, add_org<font color="#909090">=True</font>)</dt><dd><tt>Searches&nbsp;portal&nbsp;users.&nbsp;<br>
+&nbsp;<br>
+Notes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;few&nbsp;things&nbsp;that&nbsp;will&nbsp;be&nbsp;helpful&nbsp;to&nbsp;know.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1.&nbsp;The&nbsp;query&nbsp;syntax&nbsp;has&nbsp;quite&nbsp;a&nbsp;few&nbsp;features&nbsp;that&nbsp;can't&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;adequately&nbsp;described&nbsp;here.&nbsp;&nbsp;The&nbsp;query&nbsp;syntax&nbsp;is&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;available&nbsp;in&nbsp;ArcGIS&nbsp;help.&nbsp;&nbsp;A&nbsp;short&nbsp;version&nbsp;of&nbsp;that&nbsp;URL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;<a href="http://bitly.com/1fJ8q31">http://bitly.com/1fJ8q31</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;Most&nbsp;of&nbsp;the&nbsp;time&nbsp;when&nbsp;searching&nbsp;groups&nbsp;you&nbsp;want&nbsp;to&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;search&nbsp;within&nbsp;your&nbsp;organization&nbsp;in&nbsp;ArcGIS&nbsp;Online<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or&nbsp;within&nbsp;your&nbsp;<a href="#Portal">Portal</a>.&nbsp;&nbsp;As&nbsp;a&nbsp;convenience,&nbsp;the&nbsp;method<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;automatically&nbsp;appends&nbsp;your&nbsp;organization&nbsp;id&nbsp;to&nbsp;the&nbsp;query&nbsp;by&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default.&nbsp;&nbsp;If&nbsp;you&nbsp;don't&nbsp;want&nbsp;the&nbsp;API&nbsp;to&nbsp;append&nbsp;to&nbsp;your&nbsp;query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set&nbsp;add_org&nbsp;to&nbsp;false.&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;q&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;query&nbsp;string.&nbsp;&nbsp;See&nbsp;notes.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;valid&nbsp;values&nbsp;can&nbsp;be&nbsp;username&nbsp;or&nbsp;created<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;valid&nbsp;values&nbsp;are&nbsp;asc&nbsp;or&nbsp;desc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;int,&nbsp;maximum&nbsp;number&nbsp;of&nbsp;users&nbsp;returned&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;add_org&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;boolean,&nbsp;controls&nbsp;whether&nbsp;to&nbsp;search&nbsp;within&nbsp;your&nbsp;org<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;dictionary&nbsp;<a href="__builtin__.html#object">object</a>&nbsp;with&nbsp;the&nbsp;following&nbsp;keys:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;created&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time&nbsp;(int),&nbsp;when&nbsp;user&nbsp;created<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;culture&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;two-letter&nbsp;language&nbsp;code<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;user&nbsp;supplied&nbsp;description&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fullName&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modified&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time&nbsp;(int),&nbsp;when&nbsp;user&nbsp;last&nbsp;modified<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;region&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;may&nbsp;be&nbsp;None<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;list,&nbsp;of&nbsp;user&nbsp;tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;thumbnail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;file<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user</tt></dd></dl>
+
+<dl><dt><a name="Portal-signup"><strong>signup</strong></a>(self, username, password, fullname, email)</dt><dd><tt>Signs&nbsp;up&nbsp;users&nbsp;to&nbsp;an&nbsp;instance&nbsp;of&nbsp;<a href="#Portal">Portal</a>&nbsp;for&nbsp;ArcGIS.&nbsp;<br>
+&nbsp;<br>
+Notes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;method&nbsp;only&nbsp;applies&nbsp;to&nbsp;<a href="#Portal">Portal</a>&nbsp;and&nbsp;not&nbsp;ArcGIS<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Online.&nbsp;&nbsp;This&nbsp;method&nbsp;can&nbsp;be&nbsp;called&nbsp;anonymously,&nbsp;but<br>
+&nbsp;&nbsp;&nbsp;&nbsp;keep&nbsp;in&nbsp;mind&nbsp;that&nbsp;self-signup&nbsp;can&nbsp;also&nbsp;be&nbsp;disabled&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;in&nbsp;a&nbsp;<a href="#Portal">Portal</a>.&nbsp;&nbsp;It&nbsp;also&nbsp;only&nbsp;creates&nbsp;built-in<br>
+&nbsp;&nbsp;&nbsp;&nbsp;accounts,&nbsp;it&nbsp;does&nbsp;not&nbsp;work&nbsp;with&nbsp;enterprise<br>
+&nbsp;&nbsp;&nbsp;&nbsp;accounts&nbsp;coming&nbsp;from&nbsp;ActiveDirectory&nbsp;or&nbsp;your<br>
+&nbsp;&nbsp;&nbsp;&nbsp;LDAP.&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;There&nbsp;is&nbsp;another&nbsp;method&nbsp;called&nbsp;createUser&nbsp;that&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;requires&nbsp;administrator&nbsp;access&nbsp;that&nbsp;can&nbsp;always<br>
+&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;used&nbsp;against&nbsp;10.2.1&nbsp;portals&nbsp;or&nbsp;later&nbsp;that<br>
+&nbsp;&nbsp;&nbsp;&nbsp;can&nbsp;create&nbsp;users&nbsp;whether&nbsp;they&nbsp;are&nbsp;builtin&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enterprise&nbsp;accounts.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;must&nbsp;be&nbsp;unique&nbsp;in&nbsp;the&nbsp;<a href="#Portal">Portal</a>,&nbsp;&gt;4&nbsp;characters<br>
+&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;must&nbsp;be&nbsp;&gt;=&nbsp;8&nbsp;characters.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fullname&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user<br>
+&nbsp;&nbsp;&nbsp;&nbsp;email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;must&nbsp;be&nbsp;an&nbsp;email&nbsp;address<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;success</tt></dd></dl>
+
+<dl><dt><a name="Portal-update_group"><strong>update_group</strong></a>(self, group_id, title<font color="#909090">=None</font>, tags<font color="#909090">=None</font>, description<font color="#909090">=None</font>, snippet<font color="#909090">=None</font>, access<font color="#909090">=None</font>, is_invitation_only<font color="#909090">=None</font>, sort_field<font color="#909090">=None</font>, sort_order<font color="#909090">=None</font>, is_view_only<font color="#909090">=None</font>, thumbnail<font color="#909090">=None</font>)</dt><dd><tt>Updates&nbsp;a&nbsp;group.<br>
+&nbsp;<br>
+Note<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Only&nbsp;provide&nbsp;the&nbsp;values&nbsp;for&nbsp;the&nbsp;arguments&nbsp;you&nbsp;wish&nbsp;to&nbsp;update.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;group_id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;the&nbsp;group&nbsp;to&nbsp;modify<br>
+&nbsp;&nbsp;&nbsp;&nbsp;title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;comma-delimited&nbsp;list&nbsp;of&nbsp;tags<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;describes&nbsp;group&nbsp;in&nbsp;detail<br>
+&nbsp;&nbsp;&nbsp;&nbsp;snippet&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;&lt;250&nbsp;characters&nbsp;summarizes&nbsp;group<br>
+&nbsp;&nbsp;&nbsp;&nbsp;access&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;can&nbsp;be&nbsp;private,&nbsp;public,&nbsp;or&nbsp;org<br>
+&nbsp;&nbsp;&nbsp;&nbsp;thumbnail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;URL&nbsp;or&nbsp;file&nbsp;location&nbsp;to&nbsp;group&nbsp;image<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is_invitation_only&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;boolean,&nbsp;defines&nbsp;whether&nbsp;users&nbsp;can&nbsp;join&nbsp;by&nbsp;request.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;specifies&nbsp;how&nbsp;shared&nbsp;items&nbsp;with&nbsp;the&nbsp;group&nbsp;are&nbsp;sorted.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sort_order&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;asc&nbsp;or&nbsp;desc&nbsp;for&nbsp;ascending&nbsp;or&nbsp;descending.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;is_view_only&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;boolean,&nbsp;defines&nbsp;whether&nbsp;the&nbsp;group&nbsp;is&nbsp;searchable<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;success</tt></dd></dl>
+
+<dl><dt><a name="Portal-update_user"><strong>update_user</strong></a>(self, username, access<font color="#909090">=None</font>, preferred_view<font color="#909090">=None</font>, description<font color="#909090">=None</font>, tags<font color="#909090">=None</font>, thumbnail<font color="#909090">=None</font>, fullname<font color="#909090">=None</font>, email<font color="#909090">=None</font>, culture<font color="#909090">=None</font>, region<font color="#909090">=None</font>)</dt><dd><tt>Updates&nbsp;a&nbsp;user's&nbsp;properties.<br>
+&nbsp;<br>
+Note:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Only&nbsp;pass&nbsp;in&nbsp;arguments&nbsp;for&nbsp;properties&nbsp;you&nbsp;want&nbsp;to&nbsp;update.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;All&nbsp;other&nbsp;properties&nbsp;will&nbsp;be&nbsp;left&nbsp;as&nbsp;they&nbsp;are.&nbsp;&nbsp;If&nbsp;you&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;want&nbsp;to&nbsp;update&nbsp;description,&nbsp;then&nbsp;only&nbsp;provide<br>
+&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;description&nbsp;argument.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;be&nbsp;updated.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;access&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;values:&nbsp;private,&nbsp;org,&nbsp;public<br>
+&nbsp;&nbsp;&nbsp;&nbsp;preferred_view&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;values:&nbsp;Web,&nbsp;GIS,&nbsp;null<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;a&nbsp;description&nbsp;of&nbsp;the&nbsp;user.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tags&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;comma-separated&nbsp;tags&nbsp;for&nbsp;searching<br>
+&nbsp;&nbsp;&nbsp;&nbsp;thumbnail&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;path&nbsp;or&nbsp;url&nbsp;to&nbsp;a&nbsp;file.&nbsp;&nbsp;can&nbsp;be&nbsp;PNG,&nbsp;GIF,&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;JPEG,&nbsp;max&nbsp;size&nbsp;1&nbsp;MB<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fullname&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;name&nbsp;of&nbsp;the&nbsp;user,&nbsp;only&nbsp;for&nbsp;built-in&nbsp;users&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;email&nbsp;address,&nbsp;only&nbsp;for&nbsp;built-in&nbsp;users<br>
+&nbsp;&nbsp;&nbsp;&nbsp;culture&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;two-letter&nbsp;language&nbsp;code,&nbsp;fr&nbsp;for&nbsp;example&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;region&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;optional&nbsp;string,&nbsp;two-letter&nbsp;country&nbsp;code,&nbsp;FR&nbsp;for&nbsp;example<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean&nbsp;indicating&nbsp;success</tt></dd></dl>
+
+<dl><dt><a name="Portal-update_user_role"><strong>update_user_role</strong></a>(self, username, role)</dt><dd><tt>Updates&nbsp;a&nbsp;user's&nbsp;role.<br>
+&nbsp;<br>
+Notes<br>
+&nbsp;&nbsp;&nbsp;&nbsp;There&nbsp;are&nbsp;three&nbsp;types&nbsp;of&nbsp;roles&nbsp;in&nbsp;<a href="#Portal">Portal</a>&nbsp;-&nbsp;user,&nbsp;publisher,&nbsp;and&nbsp;administrator.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;user&nbsp;can&nbsp;share&nbsp;items,&nbsp;create&nbsp;maps,&nbsp;create&nbsp;groups,&nbsp;etc.&nbsp;&nbsp;A&nbsp;publisher&nbsp;can&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;do&nbsp;everything&nbsp;a&nbsp;user&nbsp;can&nbsp;do&nbsp;and&nbsp;create&nbsp;hosted&nbsp;services.&nbsp;&nbsp;An&nbsp;administrator&nbsp;can&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;do&nbsp;everything&nbsp;that&nbsp;is&nbsp;possible&nbsp;in&nbsp;<a href="#Portal">Portal</a>.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<br>
+Arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;user&nbsp;whose&nbsp;role&nbsp;will&nbsp;change<br>
+&nbsp;&nbsp;&nbsp;&nbsp;role&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;required&nbsp;string,&nbsp;one&nbsp;of&nbsp;these&nbsp;values&nbsp;org_user,&nbsp;org_publisher,&nbsp;org_admin<br>
+&nbsp;<br>
+Returns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;boolean,&nbsp;that&nbsp;indicates&nbsp;success</tt></dd></dl>
+
+</td></tr></table></td></tr></table><p>
+</body></html>
