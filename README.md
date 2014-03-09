@@ -1,4 +1,4 @@
-Poartalpy
+Portalpy
 =========
 Portalpy is a Python module that allows you to administer Portal for ArcGIS and ArcGIS Online.  
 
