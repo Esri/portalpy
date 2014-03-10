@@ -1,4 +1,4 @@
-import PortalPy
+import portalpy
 import unittest
 
 class TestPortalProperties(unittest.TestCase):
@@ -17,9 +17,9 @@ class TestPortalProperties(unittest.TestCase):
     portalUserPassword  = "amy.user"
     
     def setUp(self):
-        self.portalAdmin = PortalPy.Portal(self.portalUrl, self.portalAdminName, self.portalAdminPassword)
-        self.portalUser = PortalPy.Portal(self.portalUrl, self.portalUserName, self.portalUserPassword)
-        self.portalAnon = PortalPy.Portal(self.portalUrl)
+        self.portalAdmin = portalpy.Portal(self.portalUrl, self.portalAdminName, self.portalAdminPassword)
+        self.portalUser = portalpy.Portal(self.portalUrl, self.portalUserName, self.portalUserPassword)
+        self.portalAnon = portalpy.Portal(self.portalUrl)
 
     def test_loggedin_authenticated(self):
         """Tests whether the boolean value is_logged_in is correct when the user is logged in."""

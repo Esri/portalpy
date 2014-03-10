@@ -1,4 +1,4 @@
-import PortalPy
+import portalpy
 import unittest
 import random
 
@@ -16,9 +16,9 @@ class TestUserGroups(unittest.TestCase):
     portalUserPassword  = "amy.user"
     
     def setUp(self):
-        self.portalAdmin = PortalPy.Portal(self.portalUrl, self.portalAdminName, self.portalAdminPassword)
-        self.portalUser = PortalPy.Portal(self.portalUrl, self.portalUserName, self.portalUserPassword)
-        self.portalAnon = PortalPy.Portal(self.portalUrl)
+        self.portalAdmin = portalpy.Portal(self.portalUrl, self.portalAdminName, self.portalAdminPassword)
+        self.portalUser = portalpy.Portal(self.portalUrl, self.portalUserName, self.portalUserPassword)
+        self.portalAnon = portalpy.Portal(self.portalUrl)
         
         # group id of existing group "GIS Department"
         self.group_id = "67e1761068b7453693a0c68c92a62e2e"  
@@ -41,7 +41,7 @@ class TestUserGroups(unittest.TestCase):
             else: 
                 continue
             
-        self.portalNewUser = PortalPy.Portal(self.portalUrl, self.test_user_name, self.test_user_password)
+        self.portalNewUser = portalpy.Portal(self.portalUrl, self.test_user_name, self.test_user_password)
         
     def tearDown(self):
         self.portalAdmin.delete_group(self.test_group_id)
