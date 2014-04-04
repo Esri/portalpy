@@ -21,6 +21,7 @@ import urlparse
 from cStringIO import StringIO
 
 
+
 _log = logging.getLogger(__name__)
 
 class Portal(object):
@@ -79,6 +80,7 @@ class Portal(object):
                  cert_file=None, expiration=60, referer=None, proxy_host=None,
                  proxy_port=None, connection=None, workdir=tempfile.gettempdir()):
         """ The Portal constructor. Requires URL and optionally username/password."""
+        
         self.url = url
         if url:
             normalized_url = _normalize_url(self.url)
@@ -107,6 +109,7 @@ class Portal(object):
             self.con = connection
         if not connection:
             _log.debug('Connecting to portal: ' + self.hostname)
+
             self.con = _ArcGISConnection(self.resturl, username, password,
                                         key_file, cert_file, expiration, True,
                                         referer, proxy_host, proxy_port)
@@ -238,31 +241,19 @@ class Portal(object):
             return resp.get('success')
 
 
-    def _delete_items(self, owner, item_ids):
-        """ Internal: Deletes items from the portal. """
-        item_ids = _unpack(item_ids, 'id')
-        postdata = self._postdata()
-        postdata['items'] = ','.join(item_ids)
-        return self.con.post('content/users/' + owner + '/deleteItems', postdata)
 
-
-
-    def delete_user(self, username, cascade=False, reassign_to=None):
+    def delete_user(self, username, reassign_to=None):
         """ Deletes a user from the portal, optionally deleting or reassigning groups and items.
 
             Notes
-                You can not delete a user in Portal if that user owns groups or items.  If you
-                choose to cascade then those items and groups will be reassigned to
-                the user identified in the reassign_to option.  If you choose not to cascade
-                the deletion will either succeed or fail depending on whether the user's items
-                and groups have previously been transferred.
+                You can not delete a user in Portal if that user owns groups or items.  If you 
+                specify someone in the reassign_to argument then items and groups will be
+                transferred to that user.  If that argument is not set then the method
+                will fail if the user has items or groups that need to be reassigned.
                 
-                When cascading, this method will delete up to 10,000 items.  If the user
-                has more than 10,000 items the method will fail.  
-            
+           
             Arguments
                  username       required string, the name of the user
-                 cascade:       optional boolean, true means reassign items and groups
                  reassign_to    optional string, new owner of items and groups
             
             Returns
@@ -270,33 +261,13 @@ class Portal(object):
         
         """
 
-        # If we're cascading, handle items and groups
-        if cascade:
-            # Reassign or delete the user's items
-            # This code works as long as the user has less than 10,000 items
-            # At some point we should update the search functions to accept
-            # None for the max results to solve this issue.
-            items = self.search(['id'], 'owner:' + username, max_results=10000)
-            if items:
-                if reassign_to:
-                    for item in items:
-                        self._reassign_item(item['id'], reassign_to)
-                else:
-                    self._delete_items(username, items)
-            # Reassign or delete the user's groups
-            groups = self.search_groups(['id'], 'owner:' + username)
-            if groups:
-                for group in groups:
-                    if reassign_to:
-                        self.reassign_group(group['id'], reassign_to)
-                    else:
-                        self.delete_group(group['id'])
-
-        # Delete the user
-        resp = self.con.post('community/users/' + username + '/delete',
-                             self._postdata())
+        if reassign_to :
+            self.reassign_user(username, reassign_to)
+        resp = self.con.post('community/users/' + username + '/delete',self._postdata())
         if resp:
             return resp.get('success')
+        else:
+            return False
 
     def generate_token(self, username, password, expiration=60):
         """ Generates and returns a new token, but doesn't re-login. 
@@ -642,14 +613,32 @@ class Portal(object):
         return None
 
 
-    def _reassign_item(self, item_id, target_owner, target_folder_name=None):
-        """ Reassigns a single item within the portal. """
-        user_item_link = self._user_item_link(item_id, path_only=True)
+    def reassign_user(self, username, target_username):
+        """ Reassigns all of a user's items and groups to another user.
+        
+            Items are transferred to the target user into a folder named
+            <user>_<folder> where user corresponds to the user whose items were
+            moved and folder corresponds to the folder that was moved.
+        
+            Note:
+                This method must be executed as an administrator.  This method also 
+                can not be undone.  The changes are immediately made and permanent.
+        
+            Arguments
+                username :         required string, user who will have items/groups transferred
+                target_username :  required string, user who will own items/groups after this.
+                
+            Returns
+                a boolean indicating success
+        
+        """
         postdata = self._postdata()
-        postdata['targetUsername'] = target_owner
-        postdata['targetFoldername'] = target_folder_name if target_folder_name else '/'
-        return self.con.post(user_item_link + '/reassign', postdata)
+        postdata['targetUsername'] = target_username
+        resp = self.con.post('community/users/' + username + '/reassign', postdata)
+        if resp:
+            return resp.get('success')
 
+        
 
     def reassign_group(self, group_id, target_owner):
         """ Reassigns a group to another owner. 
@@ -749,7 +738,7 @@ class Portal(object):
         while count < max_results and nextstart > 0:
             resp = self._search_page(q, bbox, nextstart, min(max_results - count, 100),
                                sort_field, sort_order)
-            results.extend(resp)
+            results.extend(resp['results'])
             count += int(resp['num'])
             nextstart = int(resp['nextStart'])
    
@@ -830,6 +819,10 @@ class Portal(object):
               sort_order='asc', max_users=1000, add_org=True):
         """ Searches portal users. 
         
+            This gives you a list of users and some basic information
+            about those users.  To get more detailed information (such as role), you 
+            may need to call get_user on each user.
+        
             Notes
                 A few things that will be helpful to know.
                 
@@ -843,7 +836,9 @@ class Portal(object):
                    or within your Portal.  As a convenience, the method
                    automatically appends your organization id to the query by 
                    default.  If you don't want the API to append to your query
-                   set add_org to false.  
+                   set add_org to false.  If you use this feature with an 
+                   OR clause such as field=x or field=y you should put this
+                   into parenthesis when using add_org.
                    
             Arguments
                 q                required string, query string.  See notes.
@@ -853,7 +848,7 @@ class Portal(object):
                 add_org          optional boolean, controls whether to search within your org
 
             Returns
-                A dictionary object with the following keys:
+                A a list of dictionary objects with the following keys:
                     created         time (int), when user created
                     culture         string, two-letter language code
                     description     string, user supplied description 
@@ -871,7 +866,6 @@ class Portal(object):
                 q += ' accountid:' + accountid
             elif accountid:
                 q = 'accountid:' + accountid
-
 
         # Execute the search and get back the results
         count = 0
@@ -994,12 +988,13 @@ class Portal(object):
                         os.rename(thumbnail, new_thumbnail)
                         thumbnail = new_thumbnail
             files.append(('thumbnail', thumbnail, os.path.basename(thumbnail)))
-
         postdata.update(properties)
+
 
         # Send the POST request, and return the id from the response
         resp = self.con.post('community/users/' + username + '/update', postdata, files, ssl=True)
             
+
         if resp:
             return resp.get('success')
 
@@ -1209,71 +1204,6 @@ class Portal(object):
         postdata.update({ 'q': q, 'start': start, 'num': num,
                           'sortField': sortfield, 'sortOrder': sortorder })
         return self.con.post('community/users', postdata)
-
-    def _user_item(self, item_id, owner=None, folder_id=None):
-        """ Returns a tuple of the item properties, item sharing, and folder id. """
-
-        # First check the cache, and if we have the link, try it
-        if id in self._user_item_links_cache:
-            user_item_link = self._user_item_links_cache[item_id]
-            resp = self.con.post(user_item_link, self._postdata())
-            if resp and not resp.get('error'):
-                return resp['item'], resp['sharing'], folder_id
-
-        # If we haven't cached the link, or the cached link no longer works,
-        # proceed with trying the more manual approach. Start with getting the
-        # owner, if not provided as input.
-        if not owner:
-            item = self.item(item_id)
-            if not item:
-                raise ValueError('Invalid item id: ' + item_id)
-            owner = item['owner']
-
-        # TODO supress warnings when searching
-
-        # If a folder was provided, use it to find the item
-        basepath = 'content/users/' + owner + '/'
-        if folder_id:
-            path = basepath + folder_id + '/items/' + item_id
-            resp = self.con.post(path, self._postdata())
-            if resp and not resp.get('error'):
-                self._user_item_links_cache[item_id] = path
-                return resp['item'], resp['sharing'], folder_id
-
-        # Otherwise, first try the root folder
-        path = basepath + 'items/' + item_id
-        resp = self.con.post(path, self._postdata())
-        if resp and not 'error' in resp:
-            self._user_item_links_cache[item_id] = path
-            return resp['item'], resp['sharing'], folder_id
-
-        # If the item wasnt in root folder, try other folders
-        folders = self.folders(owner)
-        for folder in folders:
-            path = basepath + folder['id'] + '/items/' + item_id
-            resp = self.con.post(path, self._postdata())
-            if resp and not resp.get('error'):
-                self._user_item_links_cache[item_id] = path
-                return resp['item'], resp['sharing'], folder['id']
-
-        return None, None, None
-
-    def _user_item_link(self, item_id, owner=None, folder_id=None, path_only=False):
-        """ Returns the user link to an item (includes folder if appropriate). """
-
-        # The call to user_item will use the cache, and will validate the link
-        item, item_sharing, folder_id = self._user_item(item_id, owner, folder_id)
-        if item:
-            link = ''
-            if not path_only:
-                link += self.con.baseurl
-                if self.is_all_ssl():
-                    link = link.replace('http://', 'https')
-            link += 'content/users/' + item['owner'] + '/'
-            if not folder_id:
-                return link + 'items/' + item_id
-            else:
-                return link + folder_id + '/items/' + item_id
 
 
 
@@ -1541,6 +1471,7 @@ class _ArcGISConnection(object):
         # Parse the response into JSON
         if _log.isEnabledFor(logging.DEBUG):
             _log.debug('RESPONSE: ' + url + ', ' + _unicode_to_ascii(resp_data))
+        
         resp_json = json.loads(resp_data)
 
         # Convert to ascii if directed to do so
@@ -1788,6 +1719,8 @@ def _tostr(obj):
     if isinstance(obj, list):
         return ', '.join(map(_tostr, obj))
     return str(obj)
+
+
 
 
 # This function is a workaround to deal with what's typically described as a
