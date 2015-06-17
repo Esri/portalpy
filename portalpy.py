@@ -27,51 +27,57 @@ _log = logging.getLogger(__name__)
 class Portal(object):
     """ An object representing a connection to a single portal (via URL).
     
-        Notes:
-        
-            To instantiate a Portal object execute code like this: 
-            
-                PortalPy.Portal(portalUrl, user, password)
+    .. note:: To instantiate a Portal object execute code like this: 
                 
-            There are a few things you should know as you use the methods below.
+            PortalPy.Portal(portalUrl, user, password)
             
-                Group IDs
-                    Many of the group functions require a group id.  This id is
-                    different than the group's name or title.  To determine
-                    a group id, use the search_groups function using the title
-                    to get the group id.
-                    
-                Time
-                    Many of the methods return a time field.  All time is
-                    returned as millseconds since 1 January 1970.  Python
-                    expects time in seconds since 1 January 1970 so make sure
-                    to divide times from PortalPy by 1000.  See the example
-                    a few lines down to see how to convert from PortalPy time
-                    to Python time.
-                    
-                    
-        Example - converting time
-                    import time
-                    .
-                    .
-                    .
-                    group = portalAdmin.get_group('67e1761068b7453693a0c68c92a62e2e')
-                    pythontime = time.ctime(group['created']/1000)
+        There are a few things you should know as you use the methods below.
         
-    
-        Example - list users in group 
-            portal = PortalPy.Portal(portalUrl, user, password)
-            resp = portal.get_group_members('67e1761068b7453693a0c68c92a62e2e')
-            for user in resp['users']:
-                print user
+        Group IDs - Many of the group functions require a group id.  This id is
+        different than the group's name or title.  To determine
+        a group id, use the search_groups function using the title
+        to get the group id.
                 
-        Example - create a group
-            portal= PortalPy.Portal(portalUrl, user, password)
-            group_id = portalAdmin.create_group('my group', 'test tag', 'a group to share travel maps')
+        Time - Many of the methods return a time field.  All time is
+        returned as millseconds since 1 January 1970.  Python
+        expects time in seconds since 1 January 1970 so make sure
+        to divide times from PortalPy by 1000.  See the example
+        a few lines down to see how to convert from PortalPy time
+        to Python time.
 
-        Example - delete a user named amy and assign her content to bob
-            portal= PortalPy.Portal(portalUrl, user, password)
-            portal.delete_user('amy.user', True, 'bob.user')
+    Example - converting time
+    
+    .. code-block:: python
+    
+        import time
+        .
+        .
+        .
+        group = portalAdmin.get_group('67e1761068b7453693a0c68c92a62e2e')
+        pythontime = time.ctime(group['created']/1000)
+    
+    Example - list users in group
+    
+    .. code-block:: python
+    
+        portal = PortalPy.Portal(portalUrl, user, password)
+        resp = portal.get_group_members('67e1761068b7453693a0c68c92a62e2e')
+        for user in resp['users']:
+            print user
+                
+    Example - create a group
+    
+    .. code-block:: python
+    
+        portal= PortalPy.Portal(portalUrl, user, password)
+        group_id = portalAdmin.create_group('my group', 'test tag', 'a group to share travel maps')
+
+    Example - delete a user named amy and assign her content to bob
+    
+    .. code-block:: python
+    
+        portal = PortalPy.Portal(portalUrl, user, password)
+        portal.delete_user('amy.user', True, 'bob.user')
     
     """
 
@@ -126,19 +132,24 @@ class Portal(object):
     def add_group_users(self, user_names, group_id):
         """ Adds users to the group specified.    
         
-            Note:
-                This method will only work if the user for the
-                Portal object is either an administrator for the entire
-                Portal or the owner of the group.
+        .. note:: 
+            This method will only work if the user for the
+            Portal object is either an administrator for the entire
+            Portal or the owner of the group.
         
-            Arguments
-                 user_names      required string, comma-separated users
-                 group_id        required string, specifying group id
+        ============  ======================================
+        **Argument**  **Description**
+        ------------  --------------------------------------
+        user_names    required string, comma-separated users
+        ------------  --------------------------------------
+        group_id      required string, specifying group id
+        ============  ======================================
             
-            Returns 
-                 A dictionary with a key of "not_added" which contains the users that were not 
-                 added to the group. 
+        :return:
+             A dictionary with a key of "not_added" which contains the users that were not 
+             added to the group. 
         """
+
 
         if self._is_pre_21:
             _log.warning('The auto_accept option is not supported in ' \
@@ -153,21 +164,146 @@ class Portal(object):
                                  postdata)
         return resp
     
+
+    def add_item(self, item_properties, data=None, thumbnail=None, metadata=None, owner=None, folder=None):
+        """ Adds content to a Portal.  
+	
+        
+        .. note:: 
+            That content can be a file (such as a layer package, geoprocessing package,
+            map package) or it can be a URL (to an ArcGIS Server service, WMS service,
+            or an application).
+
+            If you are uploading a package or other file, provide a path or URL
+            to the file in the data argument.
+
+            From a technical perspective, none of the item properties below are required.  However,
+            it is strongly recommended that title, type, typeKeywords, tags, snippet, and description
+            be provided.
+
+        
+        ============     ====================================================
+        **Argument**     **Description**
+        ------------     ----------------------------------------------------
+        item_properties  required dictionary, see below for the keys and values
+        ------------     ----------------------------------------------------
+        data             optional string, either a path or URL to the data
+        ------------     ----------------------------------------------------
+        thumbnail        optional string, either a path or URL to an image
+        ------------     ----------------------------------------------------
+        metadata         optional string, either a path or URL to metadata.
+        ------------     ----------------------------------------------------
+        owner            optional string, defaults to logged in user.
+        ------------     ----------------------------------------------------
+        folder           optional string, content folder where placing item
+        ============     ====================================================
+
+
+        ================  ============================================================================
+         **Key**           **Value**
+        ----------------  ----------------------------------------------------------------------------
+        type              optional string, indicates type of item.  See URL 1 below for valid values.
+        ----------------  ----------------------------------------------------------------------------
+        typeKeywords      optinal string list.  Lists all sub-types.  See URL 1 for valid values.
+        ----------------  ----------------------------------------------------------------------------
+        description       optional string.  Description of the item.
+        ----------------  ----------------------------------------------------------------------------
+        title             optional string.  Name of the item.  
+        ----------------  ----------------------------------------------------------------------------
+        url               optional string.  URL to item that are based on URLs.
+        ----------------  ----------------------------------------------------------------------------
+        tags              optional string of comma-separated values.  Used for searches on items.
+        ----------------  ----------------------------------------------------------------------------
+        snippet           optional string.  Provides a very short summary of the what the item is.
+        ----------------  ----------------------------------------------------------------------------
+        extent            optional string with comma separated values for min x, min y, max x, max y.
+        ----------------  ----------------------------------------------------------------------------
+        spatialReference  optional string.  Coordinate system that the item is in.
+        ----------------  ----------------------------------------------------------------------------
+        accessInformation optional string.  Information on the source of the content.
+        ----------------  ----------------------------------------------------------------------------
+        licenseInfo       optinal string, any license information or restrictions regarding the content.
+        ----------------  ----------------------------------------------------------------------------
+        culture           optional string.  Locale, country and language information.
+        ----------------  ----------------------------------------------------------------------------
+        access            optional string.  Valid values: private, shared, org, or public.
+        ----------------  ----------------------------------------------------------------------------
+        commentsEnabled   optional boolean.  Default is true.  Controls whether comments are allowed.
+        ----------------  ----------------------------------------------------------------------------
+        culture           optional string.  Language and country information.
+        ================  ============================================================================
+
+            
+	URL 1: http://resources.arcgis.com/en/help/arcgis-rest-api/index.html#//02r3000000ms000000
+
+        :return:
+             The item id of the uploaded item if successful, None if unsuccessful.
+        """
+
+
+        # Postdata is a dictionary object whose keys and values will be sent via an HTTP Post.
+        postdata = self._postdata()
+        postdata.update(_unicode_to_ascii(item_properties))
+
+        # Build the files list (tuples)
+        files = []
+        if data:
+            if _is_http_url(data):
+                data = urllib.urlretrieve(data)[0]
+            files.append(('file', data, os.path.basename(data)))
+        if metadata:
+            if _is_http_url(metadata):
+                metadata = urllib.urlretrieve(metadata)[0]
+            files.append(('metadata', metadata, 'metadata.xml'))
+        if thumbnail:
+            if _is_http_url(thumbnail):
+                thumbnail = urllib.urlretrieve(thumbnail)[0]
+                file_ext = os.path.splitext(thumbnail)[1]
+                if not file_ext:
+                    file_ext = imghdr.what(thumbnail)
+                    if file_ext in ('gif', 'png', 'jpeg'):
+                        new_thumbnail = thumbnail + '.' + file_ext
+                        os.rename(thumbnail, new_thumbnail)
+                        thumbnail = new_thumbnail
+            files.append(('thumbnail', thumbnail, os.path.basename(thumbnail)))
+
+        # If owner isn't specified, use the logged in user
+        if not owner:
+            owner = self.logged_in_user()['username']
+
+        # Setup the item path, including the folder, and post to it
+        path = 'content/users/' + owner
+        if folder:
+            path += '/' + folder
+        path += '/addItem'
+        resp = self.con.post(path, postdata, files)
+        if resp and resp.get('success'):
+            return resp['id']
+    
+
+
     
     
     def create_group_from_dict(self, group, thumbnail=None):
         
         """ Creates a group and returns a group id if successful.
         
-        Note
+        .. note:: 
            Use create_group in most cases.  This method is useful for taking a group
            dict returned from another PortalPy call and copying it.
         
-        Arguments
-            group        dict object
-            thumbnail    url to image
+        ============  ======================================
+        **Argument**  **Description**
+        ------------  --------------------------------------
+        group         dict object
+        ------------  --------------------------------------
+        thumbnail     url to image
+        ============  ======================================
         
         Example
+
+        .. code-block:: python
+        
              create_group({'title': 'Test', 'access':'public'})                
         """
         
@@ -199,19 +335,31 @@ class Portal(object):
                      sort_order='desc', is_view_only=False, ):
         """ Creates a group and returns a group id if successful.  
   
-        Arguments
-            title             required string, name of the group
-            tags              required string, comma-delimited list of tags
-            description       optional string, describes group in detail
-            snippet           optional string, <250 characters summarizes group
-            access            optional string, can be private, public, or org
-            thumbnail         optional string, URL to group image
-            isInvitationOnly  optional boolean, defines whether users can join by request.
-            sort_field        optional string, specifies how shared items with the group are sorted.
-            sort_order        optional string, asc or desc for ascending or descending.
-            is_view_only      optional boolean, defines whether the group is searchable
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        title             required string, name of the group
+        ----------------  --------------------------------------------------------
+        tags              required string, comma-delimited list of tags
+        ----------------  --------------------------------------------------------
+        description       optional string, describes group in detail
+        ----------------  --------------------------------------------------------
+        snippet           optional string, <250 characters summarizes group
+        ----------------  --------------------------------------------------------
+        access            optional string, can be private, public, or org
+        ----------------  --------------------------------------------------------
+        thumbnail         optional string, URL to group image
+        ----------------  --------------------------------------------------------
+        isInvitationOnly  optional boolean, defines whether users can join by request.
+        ----------------  --------------------------------------------------------
+        sort_field        optional string, specifies how shared items with the group are sorted.
+        ----------------  --------------------------------------------------------
+        sort_order        optional string, asc or desc for ascending or descending.
+        ----------------  --------------------------------------------------------
+        is_view_only      optional boolean, defines whether the group is searchable
+        ================  ========================================================
 
-        Returns
+        :return:
             a string that is a group id.
         """
 
@@ -228,8 +376,11 @@ class Portal(object):
     def delete_group(self, group_id):
         """ Deletes a group. 
         
-        Arguments
-            group_id is a string containing the id for the group to be deleted.
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        group_id          string containing the id for the group to be deleted.
+        ================  ========================================================
         
         Returns 
             a boolean indicating whether it was successful.
@@ -241,25 +392,116 @@ class Portal(object):
             return resp.get('success')
 
 
+    def delete_item(self, item_id, folder=None, owner=None):
+        """ Deletes a single item from Portal.
+
+
+        .. note:: 
+           The delete item method requires the user to be logged in.  Administrators
+           can delete any item in the Portal, but everyone else can only delete
+           their own items.
+
+           When called by an administrator on another user's items, the owner
+           of the item should be specified as an argument.  
+
+           The folder in which the item resides must always be provided unless the
+           item is in the user's root folder.  If it's in the root folder then the
+           folder argument can be omitted.
+        
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        item_id           required string containing the id of the item to be deleted.
+        ----------------  --------------------------------------------------------
+        owner             optional string, the owner of the item, defaults to the logged in user.
+        ----------------  --------------------------------------------------------
+        folder            optonal string, the folder in which the item exists. Set to None for root.
+        ================  ========================================================
+        
+        Returns 
+            a boolean indicating whether it was successful.
+        
+       """
+	if owner is None:
+		owner = self.con._username
+	
+	if folder is None :
+		path = 'content/users/' + owner + '/items/' + item_id + '/delete'
+	else :
+		path = 'content/users/' + owner + '/' + folder + '/items/' + item_id + '/delete'
+	
+        resp = self.con.post(path, self._postdata())
+        if resp:
+            return resp.get('success')
+
+
+
+
+    def delete_items(self, item_ids):
+        """ Deletes multiple items in Portal.
+
+
+        .. note:: 
+           The delete items method requires the user to be logged in.  Administrators
+           can delete any item in the Portal, but everyone else can only delete
+           their own items.
+
+           This method takes a list of item ids.
+
+        
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        item_ids          required list of strings containing the item ids to delete
+        ----------------  --------------------------------------------------------
+        owner             optional string, the owner of the item, defaults to the logged in user.
+        ----------------  --------------------------------------------------------
+        folder            optonal string, the folder in which the item exists. Set to None for root.
+        ================  ========================================================
+        
+        Returns 
+            a list of dictionary objects that have itemId and success as the properties.
+
+
+        Example:
+
+             resp = portal.delete_items([item1, item2, item3])
+             for item in resp :
+                 print item['itemId'] + ':' + str(item['success'])
+        
+       """
+
+        postdata = self._postdata()
+        postdata['items'] = ','.join(item_ids)
+        resp = self.con.post('content/users/' + self.con._username + '/deleteItems', postdata)
+	return resp['results']
+
+
+
 
     def delete_user(self, username, reassign_to=None):
         """ Deletes a user from the portal, optionally deleting or reassigning groups and items.
 
-            Notes
-                You can not delete a user in Portal if that user owns groups or items.  If you 
-                specify someone in the reassign_to argument then items and groups will be
-                transferred to that user.  If that argument is not set then the method
-                will fail if the user has items or groups that need to be reassigned.
+        .. note:: 
+            You can not delete a user in Portal if that user owns groups or items.  If you 
+            specify someone in the reassign_to argument then items and groups will be
+            transferred to that user.  If that argument is not set then the method
+            will fail if the user has items or groups that need to be reassigned.
                 
            
-            Arguments
-                 username       required string, the name of the user
-                 reassign_to    optional string, new owner of items and groups
-            
-            Returns
-                a boolean indicating whether the operation succeeded or failed.
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        username          required string, the name of the user
+        ----------------  --------------------------------------------------------
+        reassign_to       optional string, new owner of items and groups
+        ================  ========================================================
+
+        :return:
+            a boolean indicating whether the operation succeeded or failed.
         
         """
+
 
         if reassign_to :
             self.reassign_user(username, reassign_to)
@@ -272,50 +514,73 @@ class Portal(object):
     def generate_token(self, username, password, expiration=60):
         """ Generates and returns a new token, but doesn't re-login. 
         
-            Notes
-                This method is not needed when using the Portal class
-                to make calls into Portal.  It's provided for the benefit
-                of making calls into Portal outside of the Portal class.
-        
-                Portal uses a token-based authentication mechanism where
-                a user provides their credentials and a short-term token
-                is used for calls.  Most calls made to the Portal REST API
-                require a token and this can be appended to those requests.
-        
-            Arguments
-                username      required string, name of the user
-                password      required password, name of the user
-                expiration    optional integer, number of minutes until the token expires
+        .. note:: 
+            This method is not needed when using the Portal class
+            to make calls into Portal.  It's provided for the benefit
+            of making calls into Portal outside of the Portal class.
             
-            Returns
-                a string with the token
+            Portal uses a token-based authentication mechanism where
+            a user provides their credentials and a short-term token
+            is used for calls.  Most calls made to the Portal REST API
+            require a token and this can be appended to those requests.
+        
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        username          required string, name of the user
+        ----------------  --------------------------------------------------------
+        password          required password, name of the user
+        ----------------  --------------------------------------------------------
+        expiration        optional integer, number of minutes until the token expires
+        ================  ========================================================
+            
+        :return:
+            a string with the token
         
         """
+
         return self.con.generate_token(username, password, expiration)
 
 
     def get_group(self, group_id):
         """ Returns group information for the specified group group_id. 
                    
-            Arguments                 
-                group_id : required string, indicating group.
+        Arguments                 
+            group_id : required string, indicating group.
             
-            Returns 
-                a dictionary object with the group's information.  The keys in
-                the dictionary object will often include:
-                   title:              the name of the group
-                   isInvitationOnly:   if set to true, users can't apply to join the group.
-                   owner:              the owner username of the group
-                   description:        explains the group
-                   snippet:            a short summary of the group
-                   tags:               user-defined tags that describe the group
-                   phone:              contact information for group.
-                   thumbnail:          File name relative to http://<community-url>/groups/<groupId>/info 
-                   created:            When group created, ms since 1 Jan 1970
-                   modified:           When group last modified. ms since 1 Jan 1970
-                   access:             Can be private, org, or public.
-                   userMembership:     A dict with keys username and memberType.  
-                   memberType:         provides the calling user's access (owner, admin, member, none).
+        :return:
+            a dictionary object with the group's information.  The keys in
+            the dictionary object will often include:
+
+            ================  ========================================================
+            **Key**           **Value**
+            ----------------  --------------------------------------------------------
+            title:            the name of the group
+            ----------------  --------------------------------------------------------
+            isInvitationOnly  if set to true, users can't apply to join the group.
+            ----------------  --------------------------------------------------------
+            owner:            the owner username of the group
+            ----------------  --------------------------------------------------------
+            description:      explains the group
+            ----------------  --------------------------------------------------------
+            snippet:          a short summary of the group
+            ----------------  --------------------------------------------------------
+            tags:             user-defined tags that describe the group
+            ----------------  --------------------------------------------------------
+            phone:            contact information for group.
+            ----------------  --------------------------------------------------------
+            thumbnail:        File name relative to http://<community-url>/groups/<groupId>/info
+            ----------------  --------------------------------------------------------
+            created:          When group created, ms since 1 Jan 1970
+            ----------------  --------------------------------------------------------
+            modified:         When group last modified. ms since 1 Jan 1970
+            ----------------  --------------------------------------------------------
+            access:           Can be private, org, or public.
+            ----------------  --------------------------------------------------------
+            userMembership:   A dict with keys username and memberType.
+            ----------------  --------------------------------------------------------
+            memberType:       provides the calling user's access (owner, admin, member, none).
+            ================  ========================================================
             
         """
         return self.con.post('community/groups/' + group_id, self._postdata())
@@ -325,16 +590,19 @@ class Portal(object):
     def get_group_thumbnail(self, group_id):
         """ Returns the bytes that make up the thumbnail for the specified group group_id.
         
-            Arguments
-                 group_id:     required string, specifies the group's thumbnail
+        Arguments
+            group_id:     required string, specifies the group's thumbnail
             
-            Returns 
-                 bytes that representt he image.
+        Returns 
+            bytes that representt he image.
             
-            Example 
-                response = portal.get_group_thumbnail("67e1761068b7453693a0c68c92a62e2e")
-                f = open(filename, 'wb')
-                f.write(response)
+        Example
+
+        .. code-block:: python
+        
+            response = portal.get_group_thumbnail("67e1761068b7453693a0c68c92a62e2e")
+            f = open(filename, 'wb')
+            f.write(response)
         
         """
         thumbnail_file = self.get_group(group_id).get('thumbnail')
@@ -347,21 +615,32 @@ class Portal(object):
     def get_group_members(self, group_id):
         """ Returns members of the specified group.
         
-            Arguments
-                group_id:    required string, specifies the group
+        Arguments
+            group_id:    required string, specifies the group
             
-            Returns 
-                a dictionary with keys: owner, admins, and users.
-                    owner      string value, the group's owner
-                    admins     list of strings, typically this is the same as the owner.
-                    users      list of strings, the members of the group
+        Returns 
+            a dictionary with keys: owner, admins, and users.
+            
+            ================  ========================================================
+            **Key**           **Value**
+            ----------------  --------------------------------------------------------
+            owner             string value, the group's owner
+            ----------------  --------------------------------------------------------
+            admins            list of strings, typically this is the same as the owner.
+            ----------------  --------------------------------------------------------
+            users             list of strings, the members of the group
+            ================  ========================================================
                 
-            Example (to print users in a group)
-                response = portal.get_group_members("67e1761068b7453693a0c68c92a62e2e")
-                for user in response['users'] :
-                    print user
+        Example (to print users in a group)
+
+        .. code-block:: python
+        
+            response = portal.get_group_members("67e1761068b7453693a0c68c92a62e2e")
+            for user in response['users'] :
+                print user
         
         """
+
         return self.con.post('community/groups/' + group_id + '/users',
                              self._postdata())
 
@@ -369,34 +648,57 @@ class Portal(object):
     def get_org_users(self, max_users=1000):
         """ Returns all users within the portal organization. 
              
-            Arguments
-                max_users : optional int, the maximum number of users to return.
+        Arguments
+            max_users : optional int, the maximum number of users to return.
             
-           Returns 
-               a list of dicts.  Each dict has the following keys:
-                   username :      string
-                   storageUsage:   int
-                   storageQuota:   int
-                   description:    string
-                   tags:           list of strings
-                   region:         string 
-                   created:        int, when account created, ms since 1 Jan 1970
-                   modified:       int, when account last modified, ms since 1 Jan 1970
-                   email:          string
-                   culture:        string
-                   orgId:          string
-                   preferredView:  string
-                   groups:         list of strings
-                   role:           string (org_user, org_publisher, org_admin) 
-                   fullName:       string
-                   thumbnail:      string
-                   idpUsername:    string
+        :return:
+            a list of dicts.  Each dict has the following keys:
+            
+            ================  ========================================================
+            **Key**           **Value**
+            ----------------  --------------------------------------------------------
+            username :        string
+            ----------------  --------------------------------------------------------
+            storageUsage:     int
+            ----------------  --------------------------------------------------------
+            storageQuota:     int
+            ----------------  --------------------------------------------------------
+            description:      string
+            ----------------  --------------------------------------------------------
+            tags:             list of strings
+            ----------------  --------------------------------------------------------
+            region:            string
+            ----------------  --------------------------------------------------------
+            created:          int, when account created, ms since 1 Jan 1970
+            ----------------  --------------------------------------------------------
+            modified:         int, when account last modified, ms since 1 Jan 1970
+            ----------------  --------------------------------------------------------
+            email:            string
+            ----------------  --------------------------------------------------------
+            culture:          string
+            ----------------  --------------------------------------------------------
+            orgId:            string
+            ----------------  --------------------------------------------------------
+            preferredView:    string
+            ----------------  --------------------------------------------------------
+            groups:           list of strings
+            ----------------  --------------------------------------------------------            
+            role:             string (org_user, org_publisher, org_admin)
+            ----------------  --------------------------------------------------------
+            fullName:         string
+            ----------------  --------------------------------------------------------
+            thumbnail:        string
+            ----------------  --------------------------------------------------------
+            idpUsername:      string
+            ================  ========================================================
        
-           Example (print all usernames in portal):
+        Example (print all usernames in portal):
+
+        .. code-block:: python
            
-               resp = portalAdmin.get_org_users()
-                for user in resp:
-                    print user['username']
+           resp = portalAdmin.get_org_users()
+           for user in resp:
+               print user['username']
        
         """
 
@@ -436,30 +738,52 @@ class Portal(object):
     def get_user(self, username):
         """ Returns the user information for the specified username. 
         
-            Arguments
-                username        required string, the username whose information you want.
+        Arguments
+            username        required string, the username whose information you want.
             
-            Returns
-                None if the user is not found and returns a dictionary object if the user is found
-                the dictionary has the following keys: 
-                    access            string
-                    created           time (int) 
-                    culture           string, two-letter language code ('en')
-                    description       string
-                    email             string
-                    fullName          string  
-                    idpUsername       string, name of the user in the enterprise system  
-                    groups            list of dictionaries.  For dictionary keys, see get_group doc.
-                    modified          time (int)
-                    orgId             string, the organization id
-                    preferredView     string, value is either Web, GIS, or null
-                    region            string, None or two letter country code 
-                    role              string, value is either org_user, org_publisher, org_admin
-                    storageUsage      int
-                    storageQuota      int
-                    tags              list of strings  
-                    thumbnail         string, name of file
-                    username          string, name of user
+        :return:
+            None if the user is not found and returns a dictionary object if the user is found
+            the dictionary has the following keys:
+            
+            ================  ========================================================
+            **Key**           **Value**
+            ----------------  --------------------------------------------------------
+            access            string
+            ----------------  --------------------------------------------------------
+            created           time (int)
+            ----------------  --------------------------------------------------------
+            culture           string, two-letter language code ('en')
+            ----------------  --------------------------------------------------------
+            description       string
+            ----------------  --------------------------------------------------------
+            email             string
+            ----------------  --------------------------------------------------------
+            fullName          string
+            ----------------  --------------------------------------------------------
+            idpUsername       string, name of the user in the enterprise system
+            ----------------  --------------------------------------------------------
+            groups            list of dictionaries.  For dictionary keys, see get_group doc.
+            ----------------  --------------------------------------------------------
+            modified          time (int)
+            ----------------  --------------------------------------------------------
+            orgId             string, the organization id
+            ----------------  --------------------------------------------------------
+            preferredView     string, value is either Web, GIS, or null
+            ----------------  --------------------------------------------------------
+            region            string, None or two letter country code
+            ----------------  --------------------------------------------------------
+            role              string, value is either org_user, org_publisher, org_admin
+            ----------------  --------------------------------------------------------
+            storageUsage      int
+            ----------------  --------------------------------------------------------
+            storageQuota      int
+            ----------------  --------------------------------------------------------
+            tags              list of strings
+            ----------------  --------------------------------------------------------
+            thumbnail         string, name of file
+            ----------------  --------------------------------------------------------
+            username          string, name of user
+            ================  ========================================================
         """
         return self.con.post('community/users/' + username, self._postdata())
 
@@ -471,22 +795,28 @@ class Portal(object):
                            role='group_member', expiration=10080):
         """ Invites users to a group.
         
-            Notes:
-                A user who is invited to a group will see a list of invitations
-                in the "Groups" tab of portal listing invitations.  The user
-                can either accept or reject the invitation.
+        .. note::
+            A user who is invited to a group will see a list of invitations
+            in the "Groups" tab of portal listing invitations.  The user
+            can either accept or reject the invitation.
         
-            Requires
-                The user executing the command must be group owner
+        Requires
+            The user executing the command must be group owner
         
-            Arguments
-                 user_names:   a required string list of users to invite
-                 group_id :    required string, specifies the group you are inviting users to.
-                 role:         an optional string, either group_member or group_admin
-                 expiration:   an optional int, specifies how long the invitation is valid for in minutes.
-            
-            Returns
-                a boolean that indicates whether the call succeeded.
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        user_names:       a required string list of users to invite
+        ----------------  --------------------------------------------------------
+        group_id :        required string, specifies the group you are inviting users to.
+        ----------------  --------------------------------------------------------
+        role:             an optional string, either group_member or group_admin
+        ----------------  --------------------------------------------------------
+        expiration:       an optional int, specifies how long the invitation is valid for in minutes.
+        ================  ========================================================
+        
+        :return:
+            a boolean that indicates whether the call succeeded.
         
         """
 
@@ -540,14 +870,14 @@ class Portal(object):
     def leave_group(self, group_id):
         """ Removes the logged in user from the specified group. 
             
-            Requires: 
-                User must be logged in.
-            
-            Arguments:
-                 group_id:   required string, specifies the group id
-            
-            Returns:
-                 a boolean indicating whether the operation was successful.
+        Requires: 
+            User must be logged in.
+        
+        Arguments:
+             group_id:   required string, specifies the group id
+        
+        :return:
+             a boolean indicating whether the operation was successful.
         """
         resp = self.con.post('community/groups/' + group_id + '/leave',
                              self._postdata())
@@ -557,20 +887,26 @@ class Portal(object):
     def login(self, username, password, expiration=60):
         """ Logs into the portal using username/password. 
         
-            Notes:
-                 You can log into a portal when you construct a portal
-                 object or you can login later.  This function is 
-                 for the situation when you need to log in later.
-            
-            Arguments
-                 username:     required string
-                 password:     required string
-                 expiration:   optional int, how long the token generated should last.
-                    
-            Returns
-                a string, the token
+        .. note:: 
+             You can log into a portal when you construct a portal
+             object or you can login later.  This function is 
+             for the situation when you need to log in later.
+        
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        username          required string
+        ----------------  --------------------------------------------------------
+        password          required string
+        ----------------  --------------------------------------------------------
+        expiration        optional int, how long the token generated should last.
+        ================  ========================================================
+                
+        :return:
+            a string, the token
         
         """
+
         newtoken = self.con.login(username, password, expiration)
         if newtoken:
             self._logged_in_user = self.get_user(username)
@@ -579,32 +915,46 @@ class Portal(object):
     def logout(self):
         """ Logs out of the portal. 
         
-        Notes
+        .. note:: 
              The portal will forget any existing tokens it was using, all 
              subsequent portal calls will be anonymous until another login
              call occurs.
         
-        Returns
+        :return:
              No return value.
         
-        """
-        self.con.logout()
+        """        
+
+	self.con.logout()
 
 
     def logged_in_user(self):
         """ Returns information about the logged in user.
         
-            Returns 
-                a dict with the following keys:
-                    username       string
-                    storageUsage   int
-                    description    string
-                    tags           comma-separated string
-                    created        int, when group created (ms since 1 Jan 1970) 
-                    modified       int, when group last modified (ms since 1 Jan 1970)
-                    fullName       string
-                    email          string
-                    idpUsername    string, name of the user in their identity provider  
+        :return:
+            a dict with the following keys:
+            
+            ================  ========================================================
+            **Key**           **Value**
+            ----------------  --------------------------------------------------------
+            username          string
+            ----------------  --------------------------------------------------------
+            storageUsage      int
+            ----------------  --------------------------------------------------------
+            description       string
+            ----------------  --------------------------------------------------------
+            tags              comma-separated string
+            ----------------  --------------------------------------------------------
+            created           int, when group created (ms since 1 Jan 1970)
+            ----------------  --------------------------------------------------------
+            modified          int, when group last modified (ms since 1 Jan 1970)
+            ----------------  --------------------------------------------------------
+            fullName          string
+            ----------------  --------------------------------------------------------
+            email             string
+            ----------------  --------------------------------------------------------
+            idpUsername       string, name of the user in their identity provider
+            ================  ========================================================
          
          """
         if self._logged_in_user:
@@ -616,22 +966,27 @@ class Portal(object):
     def reassign_user(self, username, target_username):
         """ Reassigns all of a user's items and groups to another user.
         
-            Items are transferred to the target user into a folder named
-            <user>_<folder> where user corresponds to the user whose items were
-            moved and folder corresponds to the folder that was moved.
-        
-            Note:
-                This method must be executed as an administrator.  This method also 
-                can not be undone.  The changes are immediately made and permanent.
-        
-            Arguments
-                username :         required string, user who will have items/groups transferred
-                target_username :  required string, user who will own items/groups after this.
-                
-            Returns
-                a boolean indicating success
+        Items are transferred to the target user into a folder named
+        <user>_<folder> where user corresponds to the user whose items were
+        moved and folder corresponds to the folder that was moved.
+    
+        .. note:: 
+            This method must be executed as an administrator.  This method also 
+            can not be undone.  The changes are immediately made and permanent.
+    
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        username          required string, user who will have items/groups transferred
+        ----------------  --------------------------------------------------------
+        target_username   required string, user who will own items/groups after this.
+        ================  ========================================================
+            
+        :return:
+            a boolean indicating success
         
         """
+
         postdata = self._postdata()
         postdata['targetUsername'] = target_username
         resp = self.con.post('community/users/' + username + '/reassign', postdata)
@@ -642,13 +997,19 @@ class Portal(object):
 
     def reassign_group(self, group_id, target_owner):
         """ Reassigns a group to another owner. 
+
         
-            Arguments
-                group_id :      required string, unique identifier for the group
-                target_owner:   required string, username of new group owner
-                
-            Returns
-                a boolean, indicating success
+        
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        group_id          required string, unique identifier for the group
+        ----------------  --------------------------------------------------------
+        target_owner      required string, username of new group owner
+        ================  ========================================================
+            
+        :return:
+            a boolean, indicating success
         
         """
         postdata = self._postdata()
@@ -658,28 +1019,72 @@ class Portal(object):
             return resp.get('success')
 
 
+    def reassign_item(self, item_id, current_owner, target_owner, current_folder=None, target_folder=None):
+        """ Allows the administrator to reassign a single item from one user to another.  
+
+	    .. note:: 
+             	If you wish to move all of a user's items (and groups) to another user then use the
+                reassign_user method.  This method only moves one item at a time.
+        
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        item_id           required string, unique identifier for the item
+        ----------------  --------------------------------------------------------
+        current_owner     required string, owner of the item currently
+        ----------------  --------------------------------------------------------
+        current_folder    optional string, folder containing the item.  Defaults to the root folder.
+        ----------------  --------------------------------------------------------
+        target_owner      required string, desired owner of the item
+        ----------------  --------------------------------------------------------
+        target_folder     optional string, folder to move the item to.
+        ================  ========================================================
+            
+        :return:
+            a boolean, indicating success
+        
+        """
+
+	path = '/content/users/' + current_owner
+	if current_folder :
+		path += '/folder'
+	path += 'items/' + item_id + '/reassign'
+
+        postdata = self._postdata()
+        postdata['targetUsername'] = target_owner
+        postdata['targetFoldername'] = target_folder if target_folder else '/'
+        return self.con.post(path, postdata)
+
+
+
     def reset_user(self, username, password, new_password=None,
                    new_security_question=None, new_security_answer=None):
         """ Resets a user's password, security question, and/or security answer.
         
-            Notes
-                This function does not apply to those using enterprise accounts
-                that come from an enterprise such as ActiveDirectory, LDAP, or SAML.
-                It only has an effect on built-in users.
-                
-                If a new security question is specified, a new security answer should
-                be provided.
-                
-                
-            Arguments
-                username                    required string, account being reset
-                password                    required string, current password
-                new_password                optional string, new password if resetting password
-                new_security_question       optional int, new security question if desired
-                new_security_answer         optional string, new security question answer if desired
-        
-            Returns
-                a boolean, indicating success
+        .. note:: 
+            This function does not apply to those using enterprise accounts
+            that come from an enterprise such as ActiveDirectory, LDAP, or SAML.
+            It only has an effect on built-in users.
+            
+            If a new security question is specified, a new security answer should
+            be provided.
+            
+        =====================  ========================================================
+        **Argument**           **Description**
+        ---------------------   --------------------------------------------------------
+        username               required string, account being reset
+        ---------------------   --------------------------------------------------------
+        password               required string, current password
+        ---------------------   --------------------------------------------------------
+        new_password           optional string, new password if resetting password
+        ---------------------   --------------------------------------------------------
+        new_security_question  optional int, new security question if desired
+        ---------------------   --------------------------------------------------------
+        new_security_answer    optional string, new security question answer if desired
+        =====================  ========================================================
+    
+        :return:
+            a boolean, indicating success
         
         """
         postdata = self._postdata()
@@ -700,12 +1105,16 @@ class Portal(object):
     def remove_group_users(self, user_names, group_id):
         """ Remove users from a group.
         
-            Arguments:
-                user_names      required string, comma-separated list of users 
-                group_id        required string, the id for a group.
-       
-            Returns:
-                a dictionary with a key notRemoved that is a list of users not removed.
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        user_names        required string, comma-separated list of users
+        ----------------  --------------------------------------------------------
+        group_id          required string, the id for a group.
+        ================  ========================================================
+   
+        :return:
+            a dictionary with a key notRemoved that is a list of users not removed.
 
         """
 
@@ -749,45 +1158,71 @@ class Portal(object):
                       max_groups=1000, add_org=True):
         """ Searches for portal groups.
         
-            Notes
-                A few things that will be helpful to know.
-                
-                1. The query syntax has quite a few features that can't 
-                   be adequately described here.  The query syntax is 
-                   available in ArcGIS help.  A short version of that URL
-                   is http://bitly.com/1fJ8q31.
-                   
-                2. Most of the time when searching groups you want to 
-                   search within your organization in ArcGIS Online
-                   or within your Portal.  As a convenience, the method
-                   automatically appends your organization id to the query by 
-                   default.  If you don't want the API to append to your query
-                   set add_org to false.  
-                   
-            Arguments
-                q                required string, query string.  See notes.
-                sort_field       optional string, valid values can be title, owner, created
-                sort_order       optional string, valid values are asc or desc
-                max_groups       optional int, maximum number of groups returned 
-                add_org          optional boolean, controls whether to search within your org
+        .. note:: 
+            A few things that will be helpful to know.
+            
+            1. The query syntax has quite a few features that can't 
+               be adequately described here.  The query syntax is 
+               available in ArcGIS help.  A short version of that URL
+               is http://bitly.com/1fJ8q31.
+               
+            2. Most of the time when searching groups you want to 
+               search within your organization in ArcGIS Online
+               or within your Portal.  As a convenience, the method
+               automatically appends your organization id to the query by 
+               default.  If you don't want the API to append to your query
+               set add_org to false.  
+               
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        q                 required string, query string.  See notes.
+        ----------------  --------------------------------------------------------
+        sort_field        optional string, valid values can be title, owner, created
+        ----------------  --------------------------------------------------------
+        sort_order        optional string, valid values are asc or desc
+        ----------------  --------------------------------------------------------
+        max_groups        optional int, maximum number of groups returned
+        ----------------  --------------------------------------------------------
+        add_org           optional boolean, controls whether to search within your org
+        ================  ========================================================
 
-            Returns
-                A list of dictionaries.  Each dictionary has the following keys.
-                    access              string, values=private, org, public
-                    created             int, ms since 1 Jan 1970
-                    description         string
-                    id                  string, unique id for group
-                    isInvitationOnly    boolean
-                    isViewOnly          boolean
-                    modified            int, ms since 1 Jan 1970
-                    owner               string, user name of owner
-                    phone               string
-                    snippet             string, short summary of group
-                    sortField           string, how shared items are sorted
-                    sortOrder           string, asc or desc
-                    tags                string list, user supplied tags for searching
-                    thumbnail           string, name of file.  Append to http://<community url>/groups/<group id>/info/
-                    title               string, name of group as shown to users
+        :return:
+            A list of dictionaries.  Each dictionary has the following keys.
+
+            ================  ========================================================
+            **Key**           **Value**
+            ----------------  --------------------------------------------------------
+            access            string, values=private, org, public
+            ----------------  --------------------------------------------------------
+            created           int, ms since 1 Jan 1970
+            ----------------  --------------------------------------------------------
+            description       string
+            ----------------  --------------------------------------------------------
+            id                string, unique id for group
+            ----------------  --------------------------------------------------------
+            isInvitationOnly  boolean
+            ----------------  --------------------------------------------------------
+            isViewOnly        boolean
+            ----------------  --------------------------------------------------------
+            modified          int, ms since 1 Jan 1970
+            ----------------  --------------------------------------------------------
+            owner             string, user name of owner
+            ----------------  --------------------------------------------------------
+            phone             string
+            ----------------  --------------------------------------------------------
+            snippet           string, short summary of group
+            ----------------  --------------------------------------------------------
+            sortField         string, how shared items are sorted
+            ----------------  --------------------------------------------------------
+            sortOrder         string, asc or desc
+            ----------------  --------------------------------------------------------
+            tags              string list, user supplied tags for searching
+            ----------------  --------------------------------------------------------
+            thumbnail         string, name of file.  Append to http://<community url>/groups/<group id>/info/
+            ----------------  --------------------------------------------------------
+            title             string, name of group as shown to users
+            ================  ========================================================
         """
         
         if add_org:
@@ -819,45 +1254,65 @@ class Portal(object):
               sort_order='asc', max_users=1000, add_org=True):
         """ Searches portal users. 
         
-            This gives you a list of users and some basic information
-            about those users.  To get more detailed information (such as role), you 
-            may need to call get_user on each user.
-        
-            Notes
-                A few things that will be helpful to know.
-                
-                1. The query syntax has quite a few features that can't 
-                   be adequately described here.  The query syntax is 
-                   available in ArcGIS help.  A short version of that URL
-                   is http://bitly.com/1fJ8q31.
-                   
-                2. Most of the time when searching groups you want to 
-                   search within your organization in ArcGIS Online
-                   or within your Portal.  As a convenience, the method
-                   automatically appends your organization id to the query by 
-                   default.  If you don't want the API to append to your query
-                   set add_org to false.  If you use this feature with an 
-                   OR clause such as field=x or field=y you should put this
-                   into parenthesis when using add_org.
-                   
-            Arguments
-                q                required string, query string.  See notes.
-                sort_field       optional string, valid values can be username or created
-                sort_order       optional string, valid values are asc or desc
-                max_users        optional int, maximum number of users returned 
-                add_org          optional boolean, controls whether to search within your org
+        This gives you a list of users and some basic information
+        about those users.  To get more detailed information (such as role), you 
+        may need to call get_user on each user.
+    
+        .. note:: 
+            A few things that will be helpful to know.
+            
+            1. The query syntax has quite a few features that can't 
+               be adequately described here.  The query syntax is 
+               available in ArcGIS help.  A short version of that URL
+               is http://bitly.com/1fJ8q31.
+               
+            2. Most of the time when searching groups you want to 
+               search within your organization in ArcGIS Online
+               or within your Portal.  As a convenience, the method
+               automatically appends your organization id to the query by 
+               default.  If you don't want the API to append to your query
+               set add_org to false.  If you use this feature with an 
+               OR clause such as field=x or field=y you should put this
+               into parenthesis when using add_org.
+               
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        q                 required string, query string.  See notes.
+        ----------------  --------------------------------------------------------        
+        sort_field        optional string, valid values can be username or created
+        ----------------  --------------------------------------------------------
+        sort_order        optional string, valid values are asc or desc
+        ----------------  --------------------------------------------------------
+        max_users         optional int, maximum number of users returned
+        ----------------  --------------------------------------------------------
+        add_org           optional boolean, controls whether to search within your org
+        ================  ========================================================
 
-            Returns
-                A a list of dictionary objects with the following keys:
-                    created         time (int), when user created
-                    culture         string, two-letter language code
-                    description     string, user supplied description 
-                    fullName        string, name of the user
-                    modified        time (int), when user last modified
-                    region          string, may be None
-                    tags            string list, of user tags
-                    thumbnail       string, name of file
-                    username        string, name of the user        
+        :return:
+            A a list of dictionary objects with the following keys:
+
+            ================  ========================================================
+            **Key**           **Value**
+            ----------------  --------------------------------------------------------
+            created           time (int), when user created
+            ----------------  --------------------------------------------------------
+            culture           string, two-letter language code
+            ----------------  --------------------------------------------------------
+            description       string, user supplied description
+            ----------------  --------------------------------------------------------
+            fullName          string, name of the user
+            ----------------  --------------------------------------------------------
+            modified          time (int), when user last modified
+            ----------------  --------------------------------------------------------
+            region            string, may be None
+            ----------------  --------------------------------------------------------
+            tags              string list, of user tags
+            ----------------  --------------------------------------------------------
+            thumbnail         string, name of file
+            ----------------  --------------------------------------------------------
+            username          string, name of the user
+            ================  ========================================================
         """
 
         if add_org:
@@ -889,30 +1344,35 @@ class Portal(object):
     def signup(self, username, password, fullname, email):
         """ Signs up users to an instance of Portal for ArcGIS. 
         
-            Notes:
-                This method only applies to Portal and not ArcGIS
-                Online.  This method can be called anonymously, but
-                keep in mind that self-signup can also be disabled 
-                in a Portal.  It also only creates built-in
-                accounts, it does not work with enterprise
-                accounts coming from ActiveDirectory or your
-                LDAP.  
-                
-                There is another method called createUser that 
-                requires administrator access that can always
-                be used against 10.2.1 portals or later that
-                can create users whether they are builtin or
-                enterprise accounts.
-                
-            Arguments
-                username    required string, must be unique in the Portal, >4 characters
-                password    required string, must be >= 8 characters.
-                fullname    required string, name of the user
-                email       required string, must be an email address
-                
-            Returns
-                a boolean indicating success
-        
+        .. note:: 
+            This method only applies to Portal and not ArcGIS
+            Online.  This method can be called anonymously, but
+            keep in mind that self-signup can also be disabled 
+            in a Portal.  It also only creates built-in
+            accounts, it does not work with enterprise
+            accounts coming from ActiveDirectory or your
+            LDAP.  
+            
+            There is another method called createUser that 
+            requires administrator access that can always
+            be used against 10.2.1 portals or later that
+            can create users whether they are builtin or
+            enterprise accounts.
+            
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        username          required string, must be unique in the Portal, >4 characters
+        ----------------  --------------------------------------------------------
+        password          required string, must be >= 8 characters.
+        ----------------  --------------------------------------------------------
+        fullname          required string, name of the user
+        ----------------  --------------------------------------------------------
+        email             required string, must be an email address
+        ================  ========================================================
+            
+        :return:
+            a boolean indicating success
         
         """
         if self.is_arcgisonline():
@@ -934,27 +1394,39 @@ class Portal(object):
                     region=None):
         """ Updates a user's properties.
         
-            Note:
-                Only pass in arguments for properties you want to update.
-                All other properties will be left as they are.  If you 
-                want to update description, then only provide
-                the description argument.
-                
-            Arguments:
-                username            required string, name of the user to be updated.
-                access              optional string, values: private, org, public
-                preferred_view      optional string, values: Web, GIS, null
-                description         optional string, a description of the user.
-                tags                optional string, comma-separated tags for searching
-                thumbnail           optional string, path or url to a file.  can be PNG, GIF, 
-                                            JPEG, max size 1 MB
-                fullname            optional string, name of the user, only for built-in users 
-                email               optional string, email address, only for built-in users
-                culture             optional string, two-letter language code, fr for example 
-                region              optional string, two-letter country code, FR for example
-        
-            Returns
-                a boolean indicating success
+        .. note:: 
+            Only pass in arguments for properties you want to update.
+            All other properties will be left as they are.  If you 
+            want to update description, then only provide
+            the description argument.
+            
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        username          required string, name of the user to be updated.
+        ----------------  --------------------------------------------------------
+        access            optional string, values: private, org, public
+        ----------------  --------------------------------------------------------
+        preferred_view    optional string, values: Web, GIS, null
+        ----------------  --------------------------------------------------------
+        description       optional string, a description of the user.
+        ----------------  --------------------------------------------------------
+        tags              optional string, comma-separated tags for searching
+        ----------------  --------------------------------------------------------
+        thumbnail         optional string, path or url to a file.  can be PNG, GIF, 
+                                  JPEG, max size 1 MB
+        ----------------  --------------------------------------------------------
+        fullname          optional string, name of the user, only for built-in users
+        ----------------  --------------------------------------------------------
+        email             optional string, email address, only for built-in users
+        ----------------  --------------------------------------------------------
+        culture           optional string, two-letter language code, fr for example
+        ----------------  --------------------------------------------------------
+        region            optional string, two-letter country code, FR for example
+        ================  ========================================================
+    
+        :return:
+            a boolean indicating success
         
         """
         properties = dict()
@@ -1003,18 +1475,22 @@ class Portal(object):
     def update_user_role(self, username, role):
         """ Updates a user's role.
         
-            Notes
-                There are three types of roles in Portal - user, publisher, and administrator.
-                A user can share items, create maps, create groups, etc.  A publisher can 
-                do everything a user can do and create hosted services.  An administrator can 
-                do everything that is possible in Portal.
-                
-            Arguments
-                username        required string, the name of the user whose role will change
-                role            required string, one of these values org_user, org_publisher, org_admin
-        
-            Returns
-                a boolean, that indicates success
+        .. note:: 
+            There are three types of roles in Portal - user, publisher, and administrator.
+            A user can share items, create maps, create groups, etc.  A publisher can 
+            do everything a user can do and create hosted services.  An administrator can 
+            do everything that is possible in Portal.
+            
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        username          required string, the name of the user whose role will change
+        ----------------  --------------------------------------------------------
+        role              required string, one of these values org_user, org_publisher, org_admin
+        ================  ========================================================
+    
+        :return:
+            a boolean, that indicates success
         
         """
         postdata = self._postdata()
@@ -1030,25 +1506,39 @@ class Portal(object):
                       thumbnail=None):
         """ Updates a group.
         
-            Note
-                Only provide the values for the arguments you wish to update.
-                
-            Arguments
-                group_id              required string, the group to modify
-                title                 optional string, name of the group
-                tags                  optional string, comma-delimited list of tags
-                description           optional string, describes group in detail
-                snippet               optional string, <250 characters summarizes group
-                access                optional string, can be private, public, or org
-                thumbnail             optional string, URL or file location to group image
-                is_invitation_only    optional boolean, defines whether users can join by request.
-                sort_field            optional string, specifies how shared items with the group are sorted.
-                sort_order            optional string, asc or desc for ascending or descending.
-                is_view_only          optional boolean, defines whether the group is searchable
-        
-            Returns
-                a boolean indicating success
+        .. note:: 
+            Only provide the values for the arguments you wish to update.
+            
+        ==================  ========================================================
+        **Argument**        **Description**
+        ------------------  --------------------------------------------------------
+        group_id              required string, the group to modify
+        ------------------  --------------------------------------------------------
+        title                 optional string, name of the group
+        ------------------  --------------------------------------------------------
+        tags                  optional string, comma-delimited list of tags
+        ------------------  --------------------------------------------------------
+        description           optional string, describes group in detail
+        ------------------  --------------------------------------------------------
+        snippet               optional string, <250 characters summarizes group
+        ------------------  --------------------------------------------------------
+        access                optional string, can be private, public, or org
+        ------------------  --------------------------------------------------------
+        thumbnail             optional string, URL or file location to group image
+        ------------------  --------------------------------------------------------
+        is_invitation_only    optional boolean, defines whether users can join by request.
+        ------------------  --------------------------------------------------------
+        sort_field            optional string, specifies how shared items with the group are sorted.
+        ------------------  --------------------------------------------------------
+        sort_order            optional string, asc or desc for ascending or descending.
+        ------------------  --------------------------------------------------------
+        is_view_only          optional boolean, defines whether the group is searchable
+        ==================  ========================================================
+    
+        :return:
+            a boolean indicating success
         """
+
         
         
         properties = dict()
@@ -1096,19 +1586,19 @@ class Portal(object):
     def get_version(self, force=False):
         """ Returns the portal version (using cache unless force=True). 
         
-            Note:
-                The version information is retrieved when you create the
-                Portal object and then cached for future requests.  If you
-                want to make a request to the Portal and not rely on the
-                cache then you can set the force argument to True.
-                
-            Arguments:
-                force        boolean, true=make a request, false=use cache
-                
-            Returns
-                a string with the version.  The version is an internal number
-                that may not match the version of the product purchased.  So
-                2.3 is returned from Portal 10.2.1 for instance.
+        .. note:: 
+            The version information is retrieved when you create the
+            Portal object and then cached for future requests.  If you
+            want to make a request to the Portal and not rely on the
+            cache then you can set the force argument to True.
+            
+        Arguments:
+            force        boolean, true=make a request, false=use cache
+            
+        :return:
+            a string with the version.  The version is an internal number
+            that may not match the version of the product purchased.  So
+            2.3 is returned from Portal 10.2.1 for instance.
         
         
         """
@@ -1137,7 +1627,70 @@ class Portal(object):
         return self._version
 
 
+    def create_folder(self, owner, title):
+        """ Creates a folder for the given user with the given title.
 
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        owner             required string, the name of the user
+        ----------------  --------------------------------------------------------
+        title             required string, the name of the folder to create for the owner
+        ================  ========================================================
+
+        :return:
+            a json object like the following:
+            {"username" : "portaladmin","id" : "bff13218991c4485a62c81db3512396f","title" : "testcreate"}
+        """
+        postdata = self._postdata()
+        postdata['title'] = title
+        resp = self.con.post('content/users/' + owner + '/createFolder', postdata)
+        if resp and resp.get('success'):
+            return resp['folder']
+
+
+
+    def delete_folder(self, owner, folder_id):
+        """ Creates a folder for the given user with the given title.
+
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        owner             required string, the name of the user
+        ----------------  --------------------------------------------------------
+        folder_id         required string, the id of the folder
+        ================  ========================================================
+
+        :return:
+            a boolean if succeeded.
+        """
+        postdata = self._postdata()
+        resp = self.con.post('content/users/' + owner + '/' + folder_id + '/delete', postdata)
+        if resp:
+            return resp.get('success')
+
+
+
+    def get_folder_id(self, owner, folder_name):
+        """ Finds the folder for a particular owner and returns its id.
+
+        ================  ========================================================
+        **Argument**      **Description**
+        ----------------  --------------------------------------------------------
+        owner             required string, the name of the user
+        ----------------  --------------------------------------------------------
+        folder_name       required string, the name of the folder to search for
+        ================  ========================================================
+
+        :return:
+            a boolean if succeeded.
+        """
+        resp = self.con.post('content/users/' + owner, self._postdata())
+        if resp and 'folders' in resp:
+            # Loop through each folder JSON object
+            for fldr in resp['folders']:
+                if fldr['title'].upper() == folder_name.upper():  # Force both strings to upper case for comparison
+                    return fldr['id']
 
  
 
