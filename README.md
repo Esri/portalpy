@@ -1,6 +1,6 @@
 Portalpy
 =========
-Portalpy is a Python module that allows you to administer Portal for ArcGIS and ArcGIS Online.  
+Portalpy is a Python module that allows you to administer Portal for ArcGIS and ArcGIS Online. It has been superseded by the [ArcGIS API for Python](https://developers.arcgis.com/python/), but is left as a resource for anyone with existing dependencies.
 
 ## Features
 * Designed to be easy.  Most tasks require just a few lines of code.
@@ -10,22 +10,16 @@ Portalpy is a Python module that allows you to administer Portal for ArcGIS and 
 
 ## Requirements
 * Python 2.7
-* Works with ArcGIS Online and all versions of Portal.
+* Works with ArcGIS Online and all versions of Portal for ArcGIS.
 
 ## Resources
 * Portalpy.html (reference doc, included in repo)
-* http://portalpy.esri.com - this is a running Portal that are used for the unit tests.  It's intended for use in testing with portalpy.
-
 
 ## Issues or new requests?
-* We are actively working on implementing functionality for item management.  If you have a request in this area, please wait.
-* If you find a bug or have a request for functionality other than item management, please create an item in GitHub.
-
-## Contributing
-We really need useful example scripts or modules that use PortalPy. 
+* Please see the newer ArcGIS API for Python at https://developers.arcgis.com/python/
 
 ## Licensing
-Copyright 2014 Esri
+Copyright 2014-2017 Esri
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -40,4 +34,3 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 A copy of the license is available in the repository's [license.txt](license.txt) file.
-
